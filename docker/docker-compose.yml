@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: rental_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: rental_db
+    ports:
+      - "8853:5432" # Map Host 8853 -> Container 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # Backend Service (NestJS)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: rental_backend
+    ports:
+      - "8852:8852"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgresql://admin:password123@db:5432/rental_db?schema=public"
+      PORT: 8852
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev
+
+  # Frontend Client (Vue)
+  client:
+    build:
+      context: ./frontend-client
+      dockerfile: Dockerfile
+    container_name: rental_client
+    ports:
+      - "8850:8850"
+    volumes:
+      - ./frontend-client:/app
+      - /app/node_modules
+    # Command สำหรับ Dev Mode (Vite)
+    command: npm run dev -- --host 0.0.0.0 --port 8850 
+
+  # Frontend Backoffice (Vue)
+  backoffice:
+    build:
+      context: ./frontend-backoffice
+      dockerfile: Dockerfile
+    container_name: rental_backoffice
+    ports:
+      - "8851:8851"
+    volumes:
+      - ./frontend-backoffice:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0 --port 8851
+
+volumes:
+  pgdata:

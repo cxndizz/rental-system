@@ -1,0 +1,117 @@
+// Path: backend/prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Enum สำหรับ Role และ Status
+enum Role {
+  USER
+  ADMIN
+  STAFF
+}
+
+enum RentalStatus {
+  PENDING
+  APPROVED
+  ON_RENT
+  RETURNED
+  OVERDUE
+  CANCELLED
+}
+
+// 1. Users
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  roles     Role[]   @default([USER])
+  profile   UserProfile?
+  kyc       UserKYC?
+  rentals   RentalOrder[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserProfile {
+  id        Int    @id @default(autoincrement())
+  userId    Int    @unique
+  firstName String
+  lastName  String
+  phone     String?
+  address   String?
+  user      User   @relation(fields: [userId], references: [id])
+}
+
+model UserKYC {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  idCardUrl String
+  status    String   @default("PENDING") // PENDING, VERIFIED, REJECTED
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+// 2. Items
+model Item {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  pricePerDay Decimal
+  stock       Int       @default(1)
+  categoryId  Int
+  category    ItemCategory @relation(fields: [categoryId], references: [id])
+  rentalItems RentalItem[]
+  media       ItemMedia[]
+  createdAt   DateTime  @default(now())
+}
+
+model ItemCategory {
+  id    Int    @id @default(autoincrement())
+  name  String
+  items Item[]
+}
+
+model ItemMedia {
+  id      Int    @id @default(autoincrement())
+  itemId  Int
+  url     String
+  type    String // IMAGE, VIDEO
+  item    Item   @relation(fields: [itemId], references: [id])
+}
+
+// 3. Rentals
+model RentalOrder {
+  id          Int           @id @default(autoincrement())
+  userId      Int
+  totalPrice  Decimal
+  status      RentalStatus  @default(PENDING)
+  startDate   DateTime
+  endDate     DateTime
+  user        User          @relation(fields: [userId], references: [id])
+  items       RentalItem[]
+  invoice     Invoice?
+  createdAt   DateTime      @default(now())
+}
+
+model RentalItem {
+  id            Int         @id @default(autoincrement())
+  rentalOrderId Int
+  itemId        Int
+  priceAtRent   Decimal
+  rentalOrder   RentalOrder @relation(fields: [rentalOrderId], references: [id])
+  item          Item        @relation(fields: [itemId], references: [id])
+}
+
+// 4. Finance (Simplified)
+model Invoice {
+  id            Int          @id @default(autoincrement())
+  rentalOrderId Int          @unique
+  amount        Decimal
+  status        String       // PAID, UNPAID
+  rentalOrder   RentalOrder  @relation(fields: [rentalOrderId], references: [id])
+}
