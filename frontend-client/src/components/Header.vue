@@ -210,10 +210,7 @@ const logout = () => {
               Support
             </router-link>
             <button
-              @click="
-                logout()
-                mobileMenuOpen = false
-              "
+              @click="logout(); mobileMenuOpen = false"
               class="text-left text-red-600 hover:text-red-700 font-medium py-2"
             >
               Logout
