@@ -6,36 +6,20 @@ import { computed } from 'vue'
 
 const route = useRoute()
 
-// ไม่แสดง Header/Footer ในหน้า Login และ Register
 const hideLayout = computed(() => {
   return ['login', 'register'].includes(route.name)
 })
 </script>
 
 <template>
-  <div id="app" class="min-h-screen flex flex-col bg-gray-50">
-    <Header v-if="!hideLayout" />
-    <main :class="hideLayout ? '' : 'flex-1'">
-      <router-view />
-    </main>
-    <Footer v-if="!hideLayout" />
+  <div class="lux-shell relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(251,191,36,0.12),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(94,234,212,0.15),transparent_30%),radial-gradient(circle_at_50%_80%,rgba(59,130,246,0.12),transparent_30%)]"></div>
+    <div class="relative flex min-h-screen flex-col">
+      <Header v-if="!hideLayout" />
+      <main :class="hideLayout ? 'flex-1' : 'flex-1 pt-8 md:pt-12'">
+        <router-view />
+      </main>
+      <Footer v-if="!hideLayout" />
+    </div>
   </div>
 </template>
-
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    sans-serif;
-}
-
-#app {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-</style>
