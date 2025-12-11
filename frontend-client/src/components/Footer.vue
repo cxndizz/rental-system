@@ -3,7 +3,7 @@ const currentYear = new Date().getFullYear()
 </script>
 
 <template>
-  <footer class="mt-auto border-t border-white/10 bg-slate-950/80 backdrop-blur-xl">
+  <footer class="mt-auto border-t border-white/10 bg-slate-950/90">
     <div class="mx-auto max-w-7xl px-4 py-12">
       <div class="grid grid-cols-1 gap-8 md:grid-cols-4">
         <div>

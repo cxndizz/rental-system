@@ -1,8 +1,7 @@
 <template>
   <div class="flex min-h-screen items-center justify-center px-4 py-10">
     <div class="glass-card w-full max-w-4xl overflow-hidden border-white/10 shadow-2xl lg:grid lg:grid-cols-2">
-      <div class="relative hidden bg-gradient-to-br from-amber-300/30 via-slate-800 to-slate-900 p-10 lg:block">
-        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.25),transparent_30%)]"></div>
+      <div class="relative hidden bg-slate-900 p-10 lg:block">
         <div class="relative space-y-4">
           <p class="pill border-white/30 bg-white/10 text-white">Welcome Back</p>
           <h2 class="text-3xl font-bold text-white">เข้าสู่ระบบเพื่อจัดการการเช่า</h2>

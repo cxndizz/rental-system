@@ -20,7 +20,7 @@ const logout = () => {
 </script>
 
 <template>
-  <header class="sticky top-0 z-50 border-b border-white/10 bg-slate-900/70 backdrop-blur-xl">
+  <header class="sticky top-0 z-50 border-b border-white/10 bg-slate-900/95 shadow-md">
     <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:py-5">
       <router-link to="/" class="flex items-center space-x-3">
         <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 to-amber-500 text-lg font-bold text-slate-900 shadow-lg">
@@ -84,7 +84,7 @@ const logout = () => {
       </button>
     </div>
 
-    <div v-if="mobileMenuOpen" class="md:hidden border-t border-white/10 bg-slate-900/90 backdrop-blur-xl">
+    <div v-if="mobileMenuOpen" class="md:hidden border-t border-white/10 bg-slate-900/95">
       <div class="space-y-4 px-4 py-4">
         <div class="glass-card flex items-center space-x-3 px-4 py-3">
           <input
