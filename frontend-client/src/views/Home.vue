@@ -2,7 +2,6 @@
   <div class="relative overflow-hidden">
     <section class="mx-auto flex max-w-7xl flex-col gap-10 px-4 pb-16 pt-4 md:pt-0">
       <div class="glass-card relative overflow-hidden p-8 md:p-12">
-        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(251,191,36,0.18),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(94,234,212,0.18),transparent_30%)]"></div>
         <div class="relative grid gap-10 md:grid-cols-2 md:items-center">
           <div class="space-y-6">
             <div class="inline-flex items-center space-x-2 rounded-full border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-amber-100">
@@ -34,8 +33,7 @@
               </div>
             </div>
           </div>
-          <div class="glass-card relative overflow-hidden rounded-3xl border-white/10 bg-gradient-to-br from-slate-900 to-slate-800 p-6 shadow-2xl">
-            <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.15),transparent_30%),radial-gradient(circle_at_80%_0%,rgba(251,191,36,0.15),transparent_30%)]"></div>
+          <div class="glass-card relative overflow-hidden rounded-3xl border-white/10 bg-gradient-to-br from-slate-900 to-slate-800 p-6 shadow-xl">
             <div class="relative space-y-4">
               <div class="flex items-center justify-between">
                 <p class="text-sm uppercase tracking-[0.25em] text-amber-200">Realtime Overview</p>
