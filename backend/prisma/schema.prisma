@@ -7,10 +7,17 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Role {
+// ==================== ENUMS ====================
+enum UserRole {
   USER
   ADMIN
   STAFF
+}
+
+enum KYCStatus {
+  PENDING
+  VERIFIED
+  REJECTED
 }
 
 enum RentalStatus {
@@ -24,18 +31,69 @@ enum RentalStatus {
   COMPLETED
 }
 
+enum InvoiceStatus {
+  UNPAID
+  PAID
+  REFUNDED
+  PARTIAL_REFUND
+}
+
+enum PaymentStatus {
+  SUCCESS
+  FAILED
+  PENDING
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  QR_CODE
+  BANK_TRANSFER
+  CASH
+}
+
+enum ReturnStatus {
+  PENDING_INSPECTION
+  INSPECTING
+  COMPLETED
+  DAMAGED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum PromotionType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  FREE_DAYS
+}
+
+enum CouponStatus {
+  ACTIVE
+  EXPIRED
+  USED
+  DISABLED
+}
+
+// ==================== USER MODELS ====================
 model User {
-  id          Int       @id @default(autoincrement())
-  email       String    @unique
-  password    String
-  roles       Role[]    @default([USER])
-  profile     UserProfile?
-  kyc         UserKYC?
-  rentals     RentalOrder[]
-  reviews     Review[]
+  id            Int           @id @default(autoincrement())
+  email         String        @unique
+  password      String
+  roles         UserRole[]    @default([USER])
+  isActive      Boolean       @default(true)
+  isBlacklisted Boolean       @default(false)
+  profile       UserProfile?
+  kyc           UserKYC?
+  rentals       RentalOrder[]
+  reviews       Review[]
   notifications Notification[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  auditLogs     AuditLog[]
+  wishlistItems WishlistItem[]
+  addresses     UserAddress[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model UserProfile {
@@ -44,141 +102,409 @@ model UserProfile {
   firstName String
   lastName  String
   phone     String?
-  address   String?
-  user      User    @relation(fields: [userId], references: [id])
+  avatar    String?
+  dateOfBirth DateTime?
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserAddress {
+  id          Int     @id @default(autoincrement())
+  userId      Int
+  addressLine String
+  city        String
+  province    String
+  postalCode  String
+  country     String  @default("Thailand")
+  isDefault   Boolean @default(false)
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
 }
 
 model UserKYC {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique
-  idCardUrl String
-  status    String   @default("PENDING") // PENDING, VERIFIED, REJECTED
-  user      User     @relation(fields: [userId], references: [id])
+  id           Int       @id @default(autoincrement())
+  userId       Int       @unique
+  idCardNumber String?
+  idCardUrl    String?
+  selfieUrl    String?
+  status       KYCStatus @default(PENDING)
+  verifiedAt   DateTime?
+  rejectedReason String?
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
+model AdminUser {
+  id          Int          @id @default(autoincrement())
+  email       String       @unique
+  password    String
+  firstName   String
+  lastName    String
+  roleId      Int
+  role        AdminRole    @relation(fields: [roleId], references: [id])
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model AdminRole {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  description String?
+  permissions Permission[]
+  adminUsers  AdminUser[]
+  createdAt   DateTime     @default(now())
+}
+
+model Permission {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+  description String?
+  module      String
+  action      String
+  roles       AdminRole[]
+}
+
+// ==================== ITEM MODELS ====================
 model Item {
   id          Int           @id @default(autoincrement())
   name        String
   description String?
-  pricePerDay Decimal
+  pricePerDay Decimal       @db.Decimal(10, 2)
   stock       Int           @default(1)
+  available   Int           @default(1)
   categoryId  Int
+  isActive    Boolean       @default(true)
   category    ItemCategory  @relation(fields: [categoryId], references: [id])
   media       ItemMedia[]
   tags        ItemTag[]
   rentalItems RentalItem[]
   reviews     Review[]
+  wishlistItems WishlistItem[]
   createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([categoryId])
+  @@index([isActive])
 }
 
 model ItemCategory {
-  id    Int    @id @default(autoincrement())
-  name  String
-  items Item[]
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  slug        String   @unique
+  icon        String?
+  isActive    Boolean  @default(true)
+  items       Item[]
+  createdAt   DateTime @default(now())
 }
 
 model ItemMedia {
-  id      Int    @id @default(autoincrement())
-  itemId  Int
-  url     String
-  type    String // IMAGE, VIDEO
-  item    Item   @relation(fields: [itemId], references: [id])
+  id        Int       @id @default(autoincrement())
+  itemId    Int
+  url       String
+  type      MediaType
+  order     Int       @default(0)
+  item      Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@index([itemId])
 }
 
 model ItemTag {
   id    Int    @id @default(autoincrement())
-  name  String
+  name  String @unique
+  slug  String @unique
   items Item[]
 }
 
+model WishlistItem {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  itemId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, itemId])
+}
+
+// ==================== RENTAL MODELS ====================
 model RentalOrder {
-  id          Int           @id @default(autoincrement())
-  userId      Int
-  totalPrice  Decimal
-  status      RentalStatus  @default(PENDING)
-  startDate   DateTime
-  endDate     DateTime
-  user        User          @relation(fields: [userId], references: [id])
-  items       RentalItem[]
-  invoice     Invoice?
-  return      Return?
-  createdAt   DateTime      @default(now())
+  id            Int           @id @default(autoincrement())
+  userId        Int
+  orderNumber   String        @unique
+  totalPrice    Decimal       @db.Decimal(10, 2)
+  depositAmount Decimal       @db.Decimal(10, 2) @default(0)
+  status        RentalStatus  @default(PENDING)
+  startDate     DateTime
+  endDate       DateTime
+  actualReturnDate DateTime?
+  notes         String?
+  user          User          @relation(fields: [userId], references: [id])
+  items         RentalItem[]
+  invoice       Invoice?
+  return        Return?
+  deposit       Deposit?
+  couponId      Int?
+  coupon        Coupon?       @relation(fields: [couponId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([orderNumber])
 }
 
 model RentalItem {
   id            Int         @id @default(autoincrement())
   rentalOrderId Int
   itemId        Int
-  priceAtRent   Decimal
-  rentalOrder   RentalOrder @relation(fields: [rentalOrderId], references: [id])
+  quantity      Int         @default(1)
+  priceAtRent   Decimal     @db.Decimal(10, 2)
+  rentalOrder   RentalOrder @relation(fields: [rentalOrderId], references: [id], onDelete: Cascade)
   item          Item        @relation(fields: [itemId], references: [id])
 }
 
-model Invoice {
-  id            Int          @id @default(autoincrement())
-  rentalOrderId Int          @unique
-  amount        Decimal
-  status        String       // UNPAID, PAID, REFUNDED
-  transactions  PaymentTransaction[]
-  rentalOrder   RentalOrder  @relation(fields: [rentalOrderId], references: [id])
-}
-
-model PaymentTransaction {
-  id        Int      @id @default(autoincrement())
-  invoiceId Int
-  amount    Decimal
-  method    String   // CREDIT_CARD, QR
-  status    String   // SUCCESS, FAILED
-  invoice   Invoice  @relation(fields: [invoiceId], references: [id])
-}
-
+// ==================== RETURN MODELS ====================
 model Return {
   id            Int           @id @default(autoincrement())
   rentalOrderId Int           @unique
   returnDate    DateTime      @default(now())
-  status        String        // PENDING_INSPECTION, COMPLETED
+  inspectedBy   Int?
+  status        ReturnStatus  @default(PENDING_INSPECTION)
+  notes         String?
   rentalOrder   RentalOrder   @relation(fields: [rentalOrderId], references: [id])
   damageReport  DamageReport?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model DamageReport {
-  id          Int     @id @default(autoincrement())
-  returnId    Int     @unique
+  id          Int      @id @default(autoincrement())
+  returnId    Int      @unique
   description String
-  penaltyFee  Decimal
-  return      Return  @relation(fields: [returnId], references: [id])
+  penaltyFee  Decimal  @db.Decimal(10, 2)
+  photoUrls   String[] // Array of image URLs
+  isPaid      Boolean  @default(false)
+  return      Return   @relation(fields: [returnId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
 }
 
+// ==================== PAYMENT MODELS ====================
+model Invoice {
+  id            Int          @id @default(autoincrement())
+  rentalOrderId Int          @unique
+  invoiceNumber String       @unique
+  amount        Decimal      @db.Decimal(10, 2)
+  taxAmount     Decimal      @db.Decimal(10, 2) @default(0)
+  totalAmount   Decimal      @db.Decimal(10, 2)
+  status        InvoiceStatus @default(UNPAID)
+  dueDate       DateTime?
+  paidAt        DateTime?
+  transactions  PaymentTransaction[]
+  rentalOrder   RentalOrder  @relation(fields: [rentalOrderId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([invoiceNumber])
+}
+
+model PaymentTransaction {
+  id              Int           @id @default(autoincrement())
+  invoiceId       Int
+  transactionId   String        @unique
+  amount          Decimal       @db.Decimal(10, 2)
+  method          PaymentMethod
+  status          PaymentStatus
+  gateway         String?
+  gatewayResponse String?       @db.Text
+  invoice         Invoice       @relation(fields: [invoiceId], references: [id])
+  createdAt       DateTime      @default(now())
+
+  @@index([invoiceId])
+  @@index([transactionId])
+}
+
+model Deposit {
+  id            Int         @id @default(autoincrement())
+  rentalOrderId Int         @unique
+  amount        Decimal     @db.Decimal(10, 2)
+  status        String      // HOLD, RELEASED, FORFEITED
+  releasedAt    DateTime?
+  rentalOrder   RentalOrder @relation(fields: [rentalOrderId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+// ==================== PROMOTION MODELS ====================
+model Promotion {
+  id          Int            @id @default(autoincrement())
+  name        String
+  description String?
+  type        PromotionType
+  value       Decimal        @db.Decimal(10, 2)
+  minRentalDays Int?
+  minAmount   Decimal?       @db.Decimal(10, 2)
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model Coupon {
+  id          Int           @id @default(autoincrement())
+  code        String        @unique
+  description String?
+  type        PromotionType
+  value       Decimal       @db.Decimal(10, 2)
+  maxUses     Int           @default(1)
+  usedCount   Int           @default(0)
+  minAmount   Decimal?      @db.Decimal(10, 2)
+  startDate   DateTime
+  endDate     DateTime
+  status      CouponStatus  @default(ACTIVE)
+  rentalOrders RentalOrder[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([code])
+}
+
+model Campaign {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  bannerUrl   String?
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ==================== REVIEW MODELS ====================
 model Review {
-  id      Int    @id @default(autoincrement())
-  userId  Int
-  itemId  Int
-  rating  Int
-  comment String?
-  user    User   @relation(fields: [userId], references: [id])
-  item    Item   @relation(fields: [itemId], references: [id])
-}
-
-model Notification {
   id        Int      @id @default(autoincrement())
   userId    Int
-  title     String
-  message   String
-  isRead    Boolean  @default(false)
+  itemId    Int
+  rating    Int
+  comment   String?  @db.Text
+  isVerified Boolean @default(false)
   user      User     @relation(fields: [userId], references: [id])
+  item      Item     @relation(fields: [itemId], references: [id])
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([itemId])
+  @@index([userId])
 }
 
+// ==================== NOTIFICATION MODELS ====================
+model Notification {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  title      String
+  message    String   @db.Text
+  type       String   // INFO, WARNING, ALERT, PROMOTION
+  isRead     Boolean  @default(false)
+  link       String?
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+model NotificationTemplate {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  subject     String
+  body        String   @db.Text
+  type        String   // EMAIL, SMS, PUSH
+  variables   String[] // Available variables like {userName}, {orderNumber}
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model NotificationLog {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  type        String
+  subject     String
+  message     String   @db.Text
+  status      String   // SENT, FAILED
+  error       String?  @db.Text
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ==================== SYSTEM MODELS ====================
 model SystemConfig {
-  id    String @id @default("config")
-  key   String @unique
-  value String
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  value       String   @db.Text
+  description String?
+  category    String   // GENERAL, PAYMENT, RENTAL, NOTIFICATION
+  isEditable  Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model AuditLog {
   id        Int      @id @default(autoincrement())
   action    String
+  module    String
   userId    Int?
-  details   String?
+  user      User?    @relation(fields: [userId], references: [id])
+  details   String?  @db.Text
+  ipAddress String?
+  userAgent String?
   timestamp DateTime @default(now())
+
+  @@index([userId])
+  @@index([module])
+  @@index([timestamp])
+}
+
+model FAQ {
+  id        Int      @id @default(autoincrement())
+  question  String
+  answer    String   @db.Text
+  category  String
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Banner {
+  id        Int      @id @default(autoincrement())
+  title     String
+  imageUrl  String
+  link      String?
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SupportTicket {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  subject   String
+  message   String   @db.Text
+  status    String   @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  priority  String   @default("NORMAL") // LOW, NORMAL, HIGH, URGENT
+  assignedTo Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
 }
