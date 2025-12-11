@@ -49,6 +49,7 @@ enum PaymentMethod {
   QR_CODE
   BANK_TRANSFER
   CASH
+  REFUND
 }
 
 enum ReturnStatus {

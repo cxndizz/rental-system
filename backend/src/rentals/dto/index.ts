@@ -1,5 +1,6 @@
 import { IsNumber, IsString, IsDateString, IsArray, IsOptional, IsEnum, ValidateNested, Min } from 'class-validator';
 import { Type } from 'class-transformer';
+import { RentalStatus } from '@prisma/client';
 
 class RentalItemDto {
   @IsNumber()
@@ -44,8 +45,8 @@ export class CreateRentalDto {
 }
 
 export class UpdateRentalStatusDto {
-  @IsEnum(['PENDING', 'APPROVED', 'ON_RENT', 'RETURNED', 'OVERDUE', 'CANCELLED', 'INSPECTION', 'COMPLETED'])
-  status: string;
+  @IsEnum(RentalStatus)
+  status: RentalStatus;
 
   @IsOptional()
   @IsString()
