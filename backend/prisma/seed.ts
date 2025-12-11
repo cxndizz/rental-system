@@ -1,16 +1,16 @@
-import { PrismaClient } from '@prisma/client';
+import { Permission, PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
-async function upsertPermissions() {
+async function upsertPermissions(): Promise<Permission[]> {
   const permissions = [
     { name: 'admin.manage', module: 'admin', action: 'manage', description: 'Full admin access' },
     { name: 'admin.view_reports', module: 'reports', action: 'view', description: 'View system reports' },
     { name: 'admin.manage_content', module: 'content', action: 'manage', description: 'Manage backoffice content' },
   ];
 
-  const records = [];
+  const records: Permission[] = [];
   for (const permission of permissions) {
     const record = await prisma.permission.upsert({
       where: { name: permission.name },
