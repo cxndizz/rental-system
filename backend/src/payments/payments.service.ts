@@ -10,8 +10,12 @@ export class PaymentsService {
       where: { id: rentalOrderId },
     });
 
+    if (!rental) {
+      throw new Error('ไม่พบข้อมูลคำสั่งเช่า');
+    }
+
     const invoiceNumber = `INV-${Date.now()}`;
-    const taxAmount = rental.totalPrice * 0.07; // 7% VAT
+    const taxAmount = parseFloat(rental.totalPrice.toString()) * 0.07; // 7% VAT
     const totalAmount = parseFloat(rental.totalPrice.toString()) + taxAmount;
 
     const invoice = await this.prisma.invoice.create({
