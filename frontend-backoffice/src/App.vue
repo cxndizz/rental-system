@@ -11,26 +11,20 @@ const isLoginPage = computed(() => route.name === 'admin-login')
 </script>
 
 <template>
-  <div id="app" class="min-h-screen bg-gray-50">
-    <!-- Login Page (Full Screen) -->
+  <div id="app" class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
     <template v-if="isLoginPage">
       <router-view />
     </template>
 
-    <!-- Dashboard Layout (Sidebar + Main Content) -->
     <template v-else>
       <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
         <Sidebar />
 
-        <!-- Main Content Area -->
         <div class="flex-1 flex flex-col overflow-hidden">
-          <!-- Header -->
           <Header />
 
-          <!-- Page Content -->
-          <main class="flex-1 overflow-y-auto bg-gray-50">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <main class="flex-1 overflow-y-auto backdrop-blur-sm bg-white/5 border-l border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-8 py-8">
               <router-view />
             </div>
           </main>

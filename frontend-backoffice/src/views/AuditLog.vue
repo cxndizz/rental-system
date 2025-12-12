@@ -1,17 +1,17 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
+  <div class="min-h-screen text-slate-100 space-y-8">
     <h1 class="text-4xl font-bold mb-6">บันทึกการใช้งานระบบ</h1>
 
-    <div class="bg-white rounded-lg shadow-md mb-6 p-4">
+    <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl mb-6 p-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <input
           v-model="filters.search"
           type="text"
           placeholder="ค้นหา..."
-          class="px-4 py-2 border rounded-lg"
+          class="px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
           @input="searchLogs"
         />
-        <select v-model="filters.action" class="px-4 py-2 border rounded-lg" @change="searchLogs">
+        <select v-model="filters.action" class="px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100" @change="searchLogs">
           <option value="">ทุกการกระทำ</option>
           <option value="CREATE">สร้าง</option>
           <option value="UPDATE">แก้ไข</option>
@@ -24,23 +24,23 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl overflow-hidden">
       <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-600">กำลังโหลดข้อมูล...</p>
+        <p class="text-slate-300">กำลังโหลดข้อมูล...</p>
       </div>
 
       <table v-else-if="logs.length" class="w-full">
-        <thead class="bg-gray-100 border-b">
+        <thead class="bg-white/5 border-b border-white/10">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">เวลา</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">ผู้ใช้</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">การกระทำ</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">รายละเอียด</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">IP Address</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-slate-200 uppercase">เวลา</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-slate-200 uppercase">ผู้ใช้</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-slate-200 uppercase">การกระทำ</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-slate-200 uppercase">รายละเอียด</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-slate-200 uppercase">IP Address</th>
           </tr>
         </thead>
-        <tbody class="divide-y">
-          <tr v-for="log in logs" :key="log.id" class="hover:bg-gray-50">
+        <tbody class="divide-y divide-white/5">
+          <tr v-for="log in logs" :key="log.id" class="hover:bg-white/5">
             <td class="px-6 py-4 text-sm">{{ formatDateTime(log.createdAt) }}</td>
             <td class="px-6 py-4">{{ log.user?.email || 'System' }}</td>
             <td class="px-6 py-4">
@@ -55,7 +55,7 @@
       </table>
 
       <div v-else class="text-center py-12">
-        <p class="text-gray-600">ไม่พบบันทึก</p>
+        <p class="text-slate-300">ไม่พบบันทึก</p>
       </div>
     </div>
 
@@ -66,7 +66,7 @@
         :key="page"
         @click="changePage(page)"
         class="px-4 py-2 rounded"
-        :class="pagination.page === page ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+        :class="pagination.page === page ? 'bg-blue-600 text-white' : 'bg-white text-slate-200 hover:bg-gray-100'"
       >
         {{ page }}
       </button>

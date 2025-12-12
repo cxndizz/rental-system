@@ -54,40 +54,30 @@ const unreadCount = computed(() => notifications.value.filter((n) => !n.read).le
 </script>
 
 <template>
-  <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
-    <div class="px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <!-- Page Title -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-slate-900/70 border-b border-white/10">
+    <div class="px-4 sm:px-8">
+      <div class="flex items-center justify-between h-20">
         <div>
-          <h1 class="text-xl font-semibold text-gray-900">{{ pageTitle }}</h1>
-          <p class="text-sm text-gray-500 hidden sm:block">
-            Welcome back, {{ adminUser.name }}
-          </p>
+          <p class="text-xs uppercase tracking-[0.2em] text-amber-300/70">Executive View</p>
+          <h1 class="text-2xl font-semibold text-white">{{ pageTitle }}</h1>
+          <p class="text-sm text-slate-300 hidden sm:block">Welcome back, {{ adminUser.name }}</p>
         </div>
 
-        <!-- Right Section -->
-        <div class="flex items-center space-x-4">
-          <!-- Quick Actions -->
+        <div class="flex items-center space-x-3">
           <router-link
             to="/items/create"
-            class="hidden sm:flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            class="hidden sm:inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-fuchsia-500 text-slate-950 font-semibold shadow-lg shadow-rose-500/30 hover:-translate-y-0.5 transition"
           >
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4v16m8-8H4"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
-            <span class="font-medium">Add Item</span>
+            New Item
           </router-link>
 
-          <!-- Notifications -->
           <div class="relative">
             <button
               @click="showNotifications = !showNotifications"
-              class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
+              class="relative p-2 rounded-full bg-white/5 border border-white/10 text-slate-100 hover:border-amber-300/60 hover:text-amber-200 transition"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -99,91 +89,77 @@ const unreadCount = computed(() => notifications.value.filter((n) => !n.read).le
               </svg>
               <span
                 v-if="unreadCount > 0"
-                class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center"
+                class="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-amber-400 to-rose-500 text-slate-950 text-xs font-bold rounded-full flex items-center justify-center shadow-lg"
               >
                 {{ unreadCount }}
               </span>
             </button>
 
-            <!-- Notifications Dropdown -->
             <div
               v-if="showNotifications"
-              class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-50"
+              class="absolute right-0 mt-3 w-80 bg-slate-900/90 border border-white/10 rounded-2xl shadow-2xl overflow-hidden backdrop-blur"
               @click.stop
             >
-              <div class="p-4 border-b border-gray-200">
-                <h3 class="font-semibold text-gray-900">Notifications</h3>
+              <div class="p-4 border-b border-white/10 flex items-center justify-between">
+                <h3 class="font-semibold text-white">Notifications</h3>
+                <span class="text-xs text-amber-200/80">Curated updates</span>
               </div>
               <div class="max-h-96 overflow-y-auto">
                 <div
                   v-for="notification in notifications"
                   :key="notification.id"
                   :class="[
-                    'p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition',
-                    !notification.read ? 'bg-blue-50' : '',
+                    'p-4 border-b border-white/5 hover:bg-white/5 cursor-pointer transition',
+                    !notification.read ? 'bg-amber-500/5' : '',
                   ]"
                 >
-                  <p class="text-sm text-gray-900">{{ notification.message }}</p>
-                  <p class="text-xs text-gray-500 mt-1">{{ notification.time }}</p>
+                  <p class="text-sm text-white">{{ notification.message }}</p>
+                  <p class="text-xs text-slate-300 mt-1">{{ notification.time }}</p>
                 </div>
               </div>
               <router-link
                 to="/notifications"
-                class="block p-3 text-center text-sm text-blue-600 hover:bg-gray-50 font-medium"
+                class="block p-3 text-center text-sm text-amber-200 hover:bg-white/5 font-semibold"
                 @click="showNotifications = false"
               >
-                View All Notifications
+                View all activity
               </router-link>
             </div>
           </div>
 
-          <!-- User Menu -->
           <div class="relative">
             <button
               @click="showUserMenu = !showUserMenu"
-              class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-lg transition"
+              class="flex items-center space-x-3 px-2 py-1 rounded-full bg-white/5 border border-white/10 hover:border-amber-300/60 transition"
             >
-              <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <span class="text-white font-medium text-sm">
-                  {{ adminUser.name.charAt(0) }}
-                </span>
+              <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-rose-500 rounded-full flex items-center justify-center shadow-md">
+                <span class="text-slate-950 font-semibold text-sm">{{ adminUser.name.charAt(0) }}</span>
               </div>
               <div class="hidden md:block text-left">
-                <p class="text-sm font-medium text-gray-900">{{ adminUser.name }}</p>
-                <p class="text-xs text-gray-500">{{ adminUser.role }}</p>
+                <p class="text-sm font-semibold text-white">{{ adminUser.name }}</p>
+                <p class="text-xs text-slate-300">{{ adminUser.role }}</p>
               </div>
-              <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
+              <svg class="w-4 h-4 text-amber-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
 
-            <!-- User Dropdown -->
             <div
               v-if="showUserMenu"
-              class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-50"
+              class="absolute right-0 mt-3 w-60 bg-slate-900/90 border border-white/10 rounded-2xl shadow-2xl overflow-hidden backdrop-blur"
               @click.stop
             >
-              <div class="p-4 border-b border-gray-200">
-                <p class="text-sm font-medium text-gray-900">{{ adminUser.name }}</p>
-                <p class="text-xs text-gray-500">{{ adminUser.email }}</p>
+              <div class="p-4 border-b border-white/10">
+                <p class="text-sm font-semibold text-white">{{ adminUser.name }}</p>
+                <p class="text-xs text-slate-300">{{ adminUser.email }}</p>
               </div>
-              <div class="py-2">
+              <div class="py-1">
                 <router-link
                   to="/settings"
-                  class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  class="flex items-center px-4 py-2 text-sm text-slate-100 hover:bg-white/5"
                   @click="showUserMenu = false"
                 >
-                  <svg
-                    class="w-4 h-4 mr-3 text-gray-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg class="w-4 h-4 mr-3 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -193,12 +169,9 @@ const unreadCount = computed(() => notifications.value.filter((n) => !n.read).le
                   </svg>
                   Settings
                 </router-link>
-                <a
-                  href="#"
-                  class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
+                <a href="#" class="flex items-center px-4 py-2 text-sm text-slate-100 hover:bg-white/5">
                   <svg
-                    class="w-4 h-4 mr-3 text-gray-500"
+                    class="w-4 h-4 mr-3 text-amber-300"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -207,7 +180,7 @@ const unreadCount = computed(() => notifications.value.filter((n) => !n.read).le
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                     />
                   </svg>
                   Help & Support
@@ -222,5 +195,4 @@ const unreadCount = computed(() => notifications.value.filter((n) => !n.read).le
 </template>
 
 <style scoped>
-/* Close dropdowns when clicking outside */
 </style>

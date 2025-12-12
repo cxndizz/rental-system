@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
+  <div class="min-h-screen text-slate-100 space-y-8">
     <div class="mb-6 flex justify-between items-center">
       <h1 class="text-4xl font-bold">จัดการหมวดหมู่</h1>
       <button
@@ -12,17 +12,17 @@
 
     <!-- Categories Grid -->
     <div v-if="loading" class="text-center py-12">
-      <p class="text-gray-600">กำลังโหลดข้อมูล...</p>
+      <p class="text-slate-300">กำลังโหลดข้อมูล...</p>
     </div>
 
     <div v-else-if="categories.length" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
       <div
         v-for="category in categories"
         :key="category.id"
-        class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition"
+        class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6 hover:shadow-lg transition"
       >
         <h3 class="text-xl font-bold mb-2">{{ category.name }}</h3>
-        <p class="text-gray-600 text-sm mb-4">{{ category.description || 'ไม่มีคำอธิบาย' }}</p>
+        <p class="text-slate-300 text-sm mb-4">{{ category.description || 'ไม่มีคำอธิบาย' }}</p>
         <p class="text-sm text-gray-500 mb-4">จำนวนสินค้า: {{ category.itemCount || 0 }}</p>
         <div class="flex gap-2">
           <button
@@ -41,8 +41,8 @@
       </div>
     </div>
 
-    <div v-else class="bg-white rounded-lg shadow-md p-12 text-center">
-      <p class="text-gray-600">ไม่มีหมวดหมู่</p>
+    <div v-else class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-12 text-center">
+      <p class="text-slate-300">ไม่มีหมวดหมู่</p>
     </div>
 
     <!-- Create/Edit Modal -->
@@ -51,20 +51,20 @@
         <h2 class="text-2xl font-bold mb-4">{{ editingCategory ? 'แก้ไขหมวดหมู่' : 'เพิ่มหมวดหมู่ใหม่' }}</h2>
         <form @submit.prevent="submitCategory" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อหมวดหมู่ *</label>
+            <label class="block text-sm font-medium text-slate-200 mb-1">ชื่อหมวดหมู่ *</label>
             <input
               v-model="categoryForm.name"
               type="text"
               required
-              class="w-full px-4 py-2 border rounded-lg"
+              class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">คำอธิบาย</label>
+            <label class="block text-sm font-medium text-slate-200 mb-1">คำอธิบาย</label>
             <textarea
               v-model="categoryForm.description"
               rows="3"
-              class="w-full px-4 py-2 border rounded-lg"
+              class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
             ></textarea>
           </div>
           <div class="flex gap-4">

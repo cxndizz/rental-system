@@ -1,17 +1,17 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
+  <div class="min-h-screen text-slate-100 space-y-8">
     <h1 class="text-4xl font-bold mb-6">จัดการการคืนสินค้า</h1>
 
     <div v-if="loading" class="text-center py-12">
-      <p class="text-gray-600">กำลังโหลดข้อมูล...</p>
+      <p class="text-slate-300">กำลังโหลดข้อมูล...</p>
     </div>
 
     <div v-else-if="returns.length" class="space-y-4">
-      <div v-for="returnItem in returns" :key="returnItem.id" class="bg-white rounded-lg shadow-md p-6">
+      <div v-for="returnItem in returns" :key="returnItem.id" class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
         <div class="flex justify-between items-start mb-4">
           <div>
             <h3 class="text-xl font-bold">{{ returnItem.returnNumber }}</h3>
-            <p class="text-gray-600">เลขที่เช่า: {{ returnItem.rentalOrder?.orderNumber }}</p>
+            <p class="text-slate-300">เลขที่เช่า: {{ returnItem.rentalOrder?.orderNumber }}</p>
           </div>
           <span :class="getStatusClass(returnItem.status)" class="px-3 py-1 rounded text-sm font-semibold">
             {{ getStatusText(returnItem.status) }}
@@ -20,11 +20,11 @@
 
         <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <p class="text-sm text-gray-600">วันที่สร้าง</p>
+            <p class="text-sm text-slate-300">วันที่สร้าง</p>
             <p class="font-semibold">{{ formatDate(returnItem.createdAt) }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-600">ลูกค้า</p>
+            <p class="text-sm text-slate-300">ลูกค้า</p>
             <p class="font-semibold">{{ returnItem.rentalOrder?.user?.profile?.firstName }}</p>
           </div>
         </div>
@@ -52,8 +52,8 @@
       </div>
     </div>
 
-    <div v-else class="bg-white rounded-lg shadow-md p-12 text-center">
-      <p class="text-gray-600">ไม่มีรายการคืนสินค้า</p>
+    <div v-else class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-12 text-center">
+      <p class="text-slate-300">ไม่มีรายการคืนสินค้า</p>
     </div>
 
     <!-- Damage Report Modal -->
@@ -63,11 +63,11 @@
         <form @submit.prevent="submitDamageReport">
           <div class="mb-4">
             <label class="block text-sm font-medium mb-1">รายละเอียดความเสียหาย</label>
-            <textarea v-model="damageForm.description" rows="4" required class="w-full px-4 py-2 border rounded-lg"></textarea>
+            <textarea v-model="damageForm.description" rows="4" required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"></textarea>
           </div>
           <div class="mb-4">
             <label class="block text-sm font-medium mb-1">ค่าเสียหาย (฿)</label>
-            <input v-model.number="damageForm.amount" type="number" required class="w-full px-4 py-2 border rounded-lg" />
+            <input v-model.number="damageForm.amount" type="number" required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100" />
           </div>
           <div class="flex gap-4">
             <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">บันทึก</button>

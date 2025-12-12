@@ -1,103 +1,107 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
-    <div class="mb-6 flex justify-between items-center">
-      <h1 class="text-4xl font-bold">จัดการสินค้า</h1>
+  <div class="min-h-screen text-slate-100 space-y-8">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-[0.2em] text-amber-200/80">Inventory intelligence</p>
+        <h1 class="text-3xl font-semibold">จัดการสินค้า</h1>
+      </div>
       <router-link
         to="/items/create"
-        class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        class="px-6 py-3 rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-fuchsia-500 text-slate-950 font-semibold shadow-lg shadow-rose-500/30 hover:-translate-y-0.5 transition"
       >
         + เพิ่มสินค้าใหม่
       </router-link>
     </div>
 
-    <!-- Filters -->
-    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+    <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <input
           v-model="filters.search"
           type="text"
           placeholder="ค้นหาสินค้า..."
-          class="px-4 py-2 border rounded-lg"
+          class="px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
           @input="searchItems"
         />
-        <select v-model="filters.categoryId" class="px-4 py-2 border rounded-lg" @change="searchItems">
-          <option value="">ทุกหมวดหมู่</option>
-          <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+        <select
+          v-model="filters.categoryId"
+          class="px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
+          @change="searchItems"
+        >
+          <option value="" class="bg-slate-900">ทุกหมวดหมู่</option>
+          <option v-for="cat in categories" :key="cat.id" :value="cat.id" class="bg-slate-900">{{ cat.name }}</option>
         </select>
-        <select v-model="filters.status" class="px-4 py-2 border rounded-lg" @change="searchItems">
-          <option value="">ทุกสถานะ</option>
-          <option value="AVAILABLE">พร้อมให้เช่า</option>
-          <option value="RENTED">กำลังเช่า</option>
-          <option value="MAINTENANCE">ซ่อมบำรุง</option>
-          <option value="RETIRED">เลิกใช้</option>
+        <select
+          v-model="filters.status"
+          class="px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
+          @change="searchItems"
+        >
+          <option value="" class="bg-slate-900">ทุกสถานะ</option>
+          <option value="AVAILABLE" class="bg-slate-900">พร้อมให้เช่า</option>
+          <option value="RENTED" class="bg-slate-900">กำลังเช่า</option>
+          <option value="MAINTENANCE" class="bg-slate-900">ซ่อมบำรุง</option>
+          <option value="RETIRED" class="bg-slate-900">เลิกใช้</option>
         </select>
         <button
           @click="resetFilters"
-          class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          class="px-4 py-3 rounded-xl bg-white/5 border border-white/10 hover:border-amber-300/60 transition"
         >
           รีเซ็ต
         </button>
       </div>
     </div>
 
-    <!-- Items Table -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-      <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-600">กำลังโหลดข้อมูล...</p>
-      </div>
+    <div class="rounded-2xl bg-slate-900/80 border border-white/10 shadow-2xl overflow-hidden">
+      <div v-if="loading" class="text-center py-12 text-slate-300">กำลังโหลดข้อมูล...</div>
 
       <table v-else-if="items.length" class="w-full">
-        <thead class="bg-gray-100 border-b">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">รูปภาพ</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">ชื่อสินค้า</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">หมวดหมู่</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">ราคา/วัน</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">คลัง</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">สถานะ</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">จัดการ</th>
+        <thead class="bg-white/5 border-b border-white/10">
+          <tr class="text-left text-xs font-semibold text-slate-300 uppercase">
+            <th class="px-6 py-3">รูปภาพ</th>
+            <th class="px-6 py-3">ชื่อสินค้า</th>
+            <th class="px-6 py-3">หมวดหมู่</th>
+            <th class="px-6 py-3">ราคา/วัน</th>
+            <th class="px-6 py-3">คลัง</th>
+            <th class="px-6 py-3">สถานะ</th>
+            <th class="px-6 py-3 text-right">จัดการ</th>
           </tr>
         </thead>
-        <tbody class="divide-y">
-          <tr v-for="item in items" :key="item.id" class="hover:bg-gray-50">
+        <tbody class="divide-y divide-white/5 divide-white/5">
+          <tr v-for="item in items" :key="item.id" class="hover:bg-white/5 transition">
             <td class="px-6 py-4">
               <img
                 :src="item.media?.[0]?.url || 'https://via.placeholder.com/100'"
                 :alt="item.name"
-                class="w-16 h-16 object-cover rounded"
+                class="w-16 h-16 object-cover rounded-xl border border-white/10"
               />
             </td>
             <td class="px-6 py-4">
-              <p class="font-semibold">{{ item.name }}</p>
-              <p class="text-sm text-gray-600">{{ item.sku }}</p>
+              <p class="font-semibold text-white">{{ item.name }}</p>
+              <p class="text-sm text-slate-300">{{ item.sku }}</p>
             </td>
-            <td class="px-6 py-4">{{ item.category?.name }}</td>
-            <td class="px-6 py-4">{{ item.pricePerDay }} ฿</td>
+            <td class="px-6 py-4 text-slate-200">{{ item.category?.name }}</td>
+            <td class="px-6 py-4 text-amber-200">{{ item.pricePerDay }} ฿</td>
             <td class="px-6 py-4">
-              <span :class="item.quantity > 0 ? 'text-green-600' : 'text-red-600'">
+              <span :class="item.quantity > 0 ? 'text-emerald-300' : 'text-rose-300'">
                 {{ item.quantity }}
               </span>
             </td>
             <td class="px-6 py-4">
-              <span
-                class="px-2 py-1 rounded text-xs font-semibold"
-                :class="getStatusClass(item.status)"
-              >
+              <span class="px-3 py-1 rounded-full text-xs font-semibold border" :class="getStatusClass(item.status)">
                 {{ getStatusText(item.status) }}
               </span>
             </td>
-            <td class="px-6 py-4">
-              <div class="flex gap-2">
+            <td class="px-6 py-4 text-right">
+              <div class="flex justify-end gap-3">
                 <router-link
                   :to="`/items/${item.id}/edit`"
-                  class="text-blue-600 hover:text-blue-800"
+                  class="text-amber-200 hover:text-white"
                   title="แก้ไข"
                 >
                   ✏️
                 </router-link>
                 <button
                   @click="deleteItem(item.id)"
-                  class="text-red-600 hover:text-red-800"
+                  class="text-rose-300 hover:text-white"
                   title="ลบ"
                 >
                   🗑️
@@ -108,19 +112,16 @@
         </tbody>
       </table>
 
-      <div v-else class="text-center py-12">
-        <p class="text-gray-600">ไม่พบสินค้า</p>
-      </div>
+      <div v-else class="text-center py-12 text-slate-300">ไม่พบสินค้า</div>
     </div>
 
-    <!-- Pagination -->
     <div v-if="pagination.totalPages > 1" class="flex justify-center mt-6 gap-2">
       <button
         v-for="page in pagination.totalPages"
         :key="page"
         @click="changePage(page)"
-        class="px-4 py-2 rounded"
-        :class="pagination.page === page ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+        class="px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-slate-200 hover:border-amber-300/60"
+        :class="pagination.page === page ? 'bg-gradient-to-r from-amber-400 via-rose-400 to-fuchsia-500 text-slate-950 font-semibold' : ''"
       >
         {{ page }}
       </button>
@@ -207,10 +208,10 @@ const deleteItem = async (id) => {
 
 const getStatusClass = (status) => {
   const classes = {
-    AVAILABLE: 'bg-green-100 text-green-800',
-    RENTED: 'bg-blue-100 text-blue-800',
-    MAINTENANCE: 'bg-yellow-100 text-yellow-800',
-    RETIRED: 'bg-gray-100 text-gray-800',
+    AVAILABLE: 'bg-emerald-500/15 text-emerald-200 border-emerald-400/40',
+    RENTED: 'bg-amber-500/15 text-amber-100 border-amber-400/40',
+    MAINTENANCE: 'bg-indigo-500/15 text-indigo-100 border-indigo-400/40',
+    RETIRED: 'bg-slate-500/15 text-slate-200 border-slate-400/40',
   };
   return classes[status] || 'bg-gray-100 text-gray-800';
 };

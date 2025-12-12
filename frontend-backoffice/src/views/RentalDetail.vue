@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
+  <div class="min-h-screen text-slate-100 space-y-8">
     <div class="max-w-6xl mx-auto">
       <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-600">กำลังโหลดข้อมูล...</p>
+        <p class="text-slate-300">กำลังโหลดข้อมูล...</p>
       </div>
 
       <div v-else-if="rental">
@@ -10,7 +10,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Customer Info -->
-          <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
             <h2 class="text-xl font-bold mb-4">ข้อมูลลูกค้า</h2>
             <div class="space-y-2">
               <p><span class="font-semibold">ชื่อ:</span> {{ rental.user?.profile?.firstName }} {{ rental.user?.profile?.lastName }}</p>
@@ -20,7 +20,7 @@
           </div>
 
           <!-- Rental Info -->
-          <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
             <h2 class="text-xl font-bold mb-4">ข้อมูลการเช่า</h2>
             <div class="space-y-2">
               <p><span class="font-semibold">สถานะ:</span>
@@ -35,7 +35,7 @@
           </div>
 
           <!-- Payment Info -->
-          <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
             <h2 class="text-xl font-bold mb-4">ข้อมูลการชำระเงิน</h2>
             <div class="space-y-2">
               <p><span class="font-semibold">ราคารวม:</span> {{ rental.totalPrice }} ฿</p>
@@ -46,10 +46,10 @@
         </div>
 
         <!-- Items -->
-        <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+        <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6 mt-6">
           <h2 class="text-2xl font-bold mb-4">รายการสินค้า</h2>
           <table class="w-full">
-            <thead class="bg-gray-100 border-b">
+            <thead class="bg-white/5 border-b border-white/10">
               <tr>
                 <th class="px-4 py-2 text-left">สินค้า</th>
                 <th class="px-4 py-2 text-left">จำนวน</th>
@@ -71,7 +71,7 @@
         </div>
 
         <!-- Actions -->
-        <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+        <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6 mt-6">
           <h2 class="text-2xl font-bold mb-4">การจัดการ</h2>
           <div class="flex gap-4">
             <button
