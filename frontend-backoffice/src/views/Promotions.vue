@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
+  <div class="min-h-screen text-slate-100 space-y-8">
     <div class="mb-6 flex justify-between items-center">
       <h1 class="text-4xl font-bold">จัดการโปรโมชั่น</h1>
       <button @click="showModal = true" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
@@ -7,9 +7,9 @@
       </button>
     </div>
 
-    <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
       <h2 class="text-2xl font-bold mb-4">รายการโปรโมชั่น</h2>
-      <p class="text-gray-600">สร้างและจัดการโปรโมชั่น คูปอง และแคมเปญการตลาด</p>
+      <p class="text-slate-300">สร้างและจัดการโปรโมชั่น คูปอง และแคมเปญการตลาด</p>
 
       <div class="mt-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -36,11 +36,11 @@
         <form @submit.prevent="createPromotion" class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-1">ชื่อโปรโมชั่น *</label>
-            <input v-model="form.name" type="text" required class="w-full px-4 py-2 border rounded-lg" />
+            <input v-model="form.name" type="text" required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100" />
           </div>
           <div>
             <label class="block text-sm font-medium mb-1">ส่วนลด (%) *</label>
-            <input v-model.number="form.discount" type="number" required class="w-full px-4 py-2 border rounded-lg" />
+            <input v-model.number="form.discount" type="number" required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100" />
           </div>
           <div class="flex gap-4">
             <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">สร้าง</button>

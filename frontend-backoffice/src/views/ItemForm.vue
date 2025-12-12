@@ -1,88 +1,88 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
+  <div class="min-h-screen text-slate-100 space-y-8">
     <div class="max-w-4xl mx-auto">
       <h1 class="text-4xl font-bold mb-8">{{ isEdit ? 'แก้ไขสินค้า' : 'เพิ่มสินค้าใหม่' }}</h1>
 
-      <div class="bg-white rounded-lg shadow-md p-8">
+      <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-8">
         <form @submit.prevent="submitForm" class="space-y-6">
           <!-- Basic Info -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อสินค้า *</label>
+              <label class="block text-sm font-medium text-slate-200 mb-1">ชื่อสินค้า *</label>
               <input
                 v-model="form.name"
                 type="text"
                 required
-                class="w-full px-4 py-2 border rounded-lg"
+                class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">SKU *</label>
+              <label class="block text-sm font-medium text-slate-200 mb-1">SKU *</label>
               <input
                 v-model="form.sku"
                 type="text"
                 required
-                class="w-full px-4 py-2 border rounded-lg"
+                class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
               />
             </div>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">คำอธิบาย *</label>
+            <label class="block text-sm font-medium text-slate-200 mb-1">คำอธิบาย *</label>
             <textarea
               v-model="form.description"
               required
               rows="4"
-              class="w-full px-4 py-2 border rounded-lg"
+              class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
             ></textarea>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">หมวดหมู่ *</label>
-              <select v-model="form.categoryId" required class="w-full px-4 py-2 border rounded-lg">
+              <label class="block text-sm font-medium text-slate-200 mb-1">หมวดหมู่ *</label>
+              <select v-model="form.categoryId" required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100">
                 <option value="">เลือกหมวดหมู่</option>
                 <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">ราคา/วัน (฿) *</label>
+              <label class="block text-sm font-medium text-slate-200 mb-1">ราคา/วัน (฿) *</label>
               <input
                 v-model.number="form.pricePerDay"
                 type="number"
                 required
                 min="0"
                 step="0.01"
-                class="w-full px-4 py-2 border rounded-lg"
+                class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">มัดจำ (฿) *</label>
+              <label class="block text-sm font-medium text-slate-200 mb-1">มัดจำ (฿) *</label>
               <input
                 v-model.number="form.depositAmount"
                 type="number"
                 required
                 min="0"
                 step="0.01"
-                class="w-full px-4 py-2 border rounded-lg"
+                class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
               />
             </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">จำนวน *</label>
+              <label class="block text-sm font-medium text-slate-200 mb-1">จำนวน *</label>
               <input
                 v-model.number="form.quantity"
                 type="number"
                 required
                 min="0"
-                class="w-full px-4 py-2 border rounded-lg"
+                class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">สถานะ *</label>
-              <select v-model="form.status" required class="w-full px-4 py-2 border rounded-lg">
+              <label class="block text-sm font-medium text-slate-200 mb-1">สถานะ *</label>
+              <select v-model="form.status" required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100">
                 <option value="AVAILABLE">พร้อมให้เช่า</option>
                 <option value="RENTED">กำลังเช่า</option>
                 <option value="MAINTENANCE">ซ่อมบำรุง</option>
@@ -93,13 +93,13 @@
 
           <!-- Images -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">รูปภาพสินค้า</label>
+            <label class="block text-sm font-medium text-slate-200 mb-1">รูปภาพสินค้า</label>
             <input
               type="file"
               accept="image/*"
               multiple
               @change="handleFileUpload"
-              class="w-full px-4 py-2 border rounded-lg"
+              class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"
             />
             <p class="text-xs text-gray-500 mt-1">อัพโหลดได้หลายไฟล์</p>
             <div v-if="existingImages.length" class="grid grid-cols-4 gap-2 mt-4">
@@ -118,11 +118,11 @@
 
           <!-- Specifications -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">ข้อมูลจำเพาะ (JSON)</label>
+            <label class="block text-sm font-medium text-slate-200 mb-1">ข้อมูลจำเพาะ (JSON)</label>
             <textarea
               v-model="specificationsText"
               rows="3"
-              class="w-full px-4 py-2 border rounded-lg font-mono text-sm"
+              class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100 font-mono text-sm"
               placeholder='{"color": "red", "size": "M"}'
             ></textarea>
           </div>

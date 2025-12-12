@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
+  <div class="min-h-screen text-slate-100 space-y-8">
     <div class="mb-6 flex justify-between items-center">
       <h1 class="text-4xl font-bold">จัดการสิทธิ์</h1>
       <button @click="showModal = true" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
@@ -7,26 +7,26 @@
       </button>
     </div>
 
-    <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
       <h2 class="text-2xl font-bold mb-4">บทบาทและสิทธิ์</h2>
-      <p class="text-gray-600 mb-4">กำหนดบทบาทและสิทธิ์การเข้าถึงระบบ</p>
+      <p class="text-slate-300 mb-4">กำหนดบทบาทและสิทธิ์การเข้าถึงระบบ</p>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         <div class="border rounded-lg p-6">
           <h3 class="font-bold text-lg mb-2">Admin</h3>
-          <p class="text-sm text-gray-600 mb-4">สิทธิ์เต็ม สามารถจัดการทุกอย่างได้</p>
+          <p class="text-sm text-slate-300 mb-4">สิทธิ์เต็ม สามารถจัดการทุกอย่างได้</p>
           <button class="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">แก้ไข</button>
         </div>
 
         <div class="border rounded-lg p-6">
           <h3 class="font-bold text-lg mb-2">Manager</h3>
-          <p class="text-sm text-gray-600 mb-4">จัดการสินค้าและรายการเช่า</p>
+          <p class="text-sm text-slate-300 mb-4">จัดการสินค้าและรายการเช่า</p>
           <button class="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">แก้ไข</button>
         </div>
 
         <div class="border rounded-lg p-6">
           <h3 class="font-bold text-lg mb-2">Staff</h3>
-          <p class="text-sm text-gray-600 mb-4">ดูข้อมูลและอัพเดทสถานะ</p>
+          <p class="text-sm text-slate-300 mb-4">ดูข้อมูลและอัพเดทสถานะ</p>
           <button class="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">แก้ไข</button>
         </div>
       </div>
@@ -39,11 +39,11 @@
         <form @submit.prevent="createRole" class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-1">ชื่อบทบาท *</label>
-            <input v-model="form.name" type="text" required class="w-full px-4 py-2 border rounded-lg" />
+            <input v-model="form.name" type="text" required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100" />
           </div>
           <div>
             <label class="block text-sm font-medium mb-1">คำอธิบาย</label>
-            <textarea v-model="form.description" rows="3" class="w-full px-4 py-2 border rounded-lg"></textarea>
+            <textarea v-model="form.description" rows="3" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100"></textarea>
           </div>
           <div class="flex gap-4">
             <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">สร้าง</button>

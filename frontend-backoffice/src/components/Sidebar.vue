@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
@@ -95,84 +95,73 @@ const logout = () => {
 <template>
   <aside
     :class="[
-      'bg-gray-900 text-white transition-all duration-300 flex flex-col',
-      isSidebarOpen ? 'w-64' : 'w-20',
+      'bg-slate-950/80 text-white transition-all duration-300 flex flex-col backdrop-blur-xl border-r border-white/10 shadow-2xl shadow-black/30',
+      isSidebarOpen ? 'w-72' : 'w-24',
     ]"
     class="h-screen sticky top-0"
   >
-    <!-- Logo -->
-    <div class="p-4 border-b border-gray-700 flex items-center justify-between">
-      <router-link to="/" class="flex items-center space-x-2">
-        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-          <span class="text-white font-bold text-xl">R</span>
+    <div class="p-5 border-b border-white/10 flex items-center justify-between">
+      <router-link to="/" class="flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 via-rose-400 to-fuchsia-500 flex items-center justify-center text-slate-950 font-extrabold text-xl shadow-lg shadow-rose-500/30">
+          R
         </div>
-        <span v-if="isSidebarOpen" class="font-bold text-lg">Admin Panel</span>
+        <div v-if="isSidebarOpen">
+          <p class="text-xs uppercase tracking-[0.2em] text-amber-200/70">Rental Ops</p>
+          <span class="font-semibold text-lg">Admin Panel</span>
+        </div>
       </router-link>
       <button
         @click="isSidebarOpen = !isSidebarOpen"
-        class="text-gray-400 hover:text-white lg:hidden"
+        class="text-amber-200/80 hover:text-white lg:hidden bg-white/5 border border-white/10 rounded-full p-2"
       >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          />
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
     </div>
 
-    <!-- Navigation -->
-    <nav class="flex-1 overflow-y-auto py-4 px-2">
+    <nav class="flex-1 overflow-y-auto py-4 px-3">
       <router-link
         v-for="item in menuItems"
         :key="item.path"
         :to="item.path"
         :class="[
-          'flex items-center px-3 py-3 mb-1 rounded-lg transition-colors group',
+          'relative flex items-center px-4 py-3 mb-2 rounded-2xl transition group border border-transparent',
           isActive(item.path)
-            ? 'bg-blue-600 text-white'
-            : 'text-gray-300 hover:bg-gray-800 hover:text-white',
+            ? 'bg-white/10 border-white/15 shadow-lg shadow-amber-500/10 text-white'
+            : 'text-slate-200 hover:bg-white/5 hover:border-white/10',
         ]"
       >
-        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="item.icon" />
-        </svg>
-        <span v-if="isSidebarOpen" class="ml-3 font-medium">{{ item.label }}</span>
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-amber-200 shadow-inner shadow-black/30">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="item.icon" />
+          </svg>
+        </span>
+        <span v-if="isSidebarOpen" class="ml-3 font-semibold tracking-tight">{{ item.label }}</span>
         <span
           v-else
-          class="absolute left-20 bg-gray-900 px-2 py-1 rounded text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+          class="absolute left-24 bg-slate-950 px-3 py-1 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity border border-white/10 shadow-xl"
         >
           {{ item.label }}
         </span>
       </router-link>
     </nav>
 
-    <!-- User Section -->
-    <div class="p-4 border-t border-gray-700">
+    <div class="p-4 border-t border-white/10">
       <button
         @click="logout"
-        :class="[
-          'flex items-center w-full px-3 py-2 rounded-lg text-gray-300 hover:bg-red-600 hover:text-white transition-colors',
-        ]"
+        class="flex items-center w-full px-4 py-3 rounded-2xl text-rose-100 bg-rose-500/10 border border-rose-500/30 hover:bg-rose-500/20 transition"
       >
-        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-          />
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
         </svg>
-        <span v-if="isSidebarOpen" class="ml-3 font-medium">Logout</span>
+        <span v-if="isSidebarOpen" class="ml-3 font-semibold">Logout</span>
       </button>
     </div>
   </aside>
 </template>
 
 <style scoped>
-/* Custom scrollbar */
 nav::-webkit-scrollbar {
   width: 4px;
 }
@@ -182,11 +171,11 @@ nav::-webkit-scrollbar-track {
 }
 
 nav::-webkit-scrollbar-thumb {
-  background: #4b5563;
+  background: #94a3b8;
   border-radius: 4px;
 }
 
 nav::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
+  background: #e2e8f0;
 }
 </style>

@@ -1,27 +1,27 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
+  <div class="min-h-screen text-slate-100 space-y-8">
     <h1 class="text-4xl font-bold mb-6">ตั้งค่าระบบ</h1>
 
     <div class="space-y-6">
-      <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
         <h2 class="text-2xl font-bold mb-4">ตั้งค่าทั่วไป</h2>
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-1">ชื่อเว็บไซต์</label>
-            <input v-model="settings.siteName" type="text" class="w-full px-4 py-2 border rounded-lg" />
+            <input v-model="settings.siteName" type="text" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100" />
           </div>
           <div>
             <label class="block text-sm font-medium mb-1">อีเมลติดต่อ</label>
-            <input v-model="settings.contactEmail" type="email" class="w-full px-4 py-2 border rounded-lg" />
+            <input v-model="settings.contactEmail" type="email" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100" />
           </div>
           <div>
             <label class="block text-sm font-medium mb-1">โทรศัพท์ติดต่อ</label>
-            <input v-model="settings.contactPhone" type="tel" class="w-full px-4 py-2 border rounded-lg" />
+            <input v-model="settings.contactPhone" type="tel" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100" />
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
         <h2 class="text-2xl font-bold mb-4">ตั้งค่าการชำระเงิน</h2>
         <div class="space-y-4">
           <div class="flex items-center">
@@ -39,20 +39,20 @@
         </div>
       </div>
 
-      <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
         <h2 class="text-2xl font-bold mb-4">ตั้งค่าการเช่า</h2>
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-1">ระยะเวลาเช่าขั้นต่ำ (วัน)</label>
-            <input v-model.number="settings.minRentalDays" type="number" class="w-full px-4 py-2 border rounded-lg" />
+            <input v-model.number="settings.minRentalDays" type="number" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100" />
           </div>
           <div>
             <label class="block text-sm font-medium mb-1">ระยะเวลาเช่าสูงสุด (วัน)</label>
-            <input v-model.number="settings.maxRentalDays" type="number" class="w-full px-4 py-2 border rounded-lg" />
+            <input v-model.number="settings.maxRentalDays" type="number" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100" />
           </div>
           <div>
             <label class="block text-sm font-medium mb-1">ค่าปรับต่อวัน (%)</label>
-            <input v-model.number="settings.lateFeePercent" type="number" class="w-full px-4 py-2 border rounded-lg" />
+            <input v-model.number="settings.lateFeePercent" type="number" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-400/60 text-slate-100" />
           </div>
         </div>
       </div>

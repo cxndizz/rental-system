@@ -1,16 +1,16 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
+  <div class="min-h-screen text-slate-100 space-y-8">
     <h1 class="text-4xl font-bold mb-6">จัดการรายการเช่า</h1>
 
     <!-- Status Tabs -->
-    <div class="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
+    <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl mb-6 overflow-hidden">
       <div class="flex border-b">
         <button
           v-for="tab in tabs"
           :key="tab.value"
           @click="currentTab = tab.value; loadRentals()"
           class="flex-1 px-6 py-4 font-semibold transition"
-          :class="currentTab === tab.value ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'"
+          :class="currentTab === tab.value ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-gray-100'"
         >
           {{ tab.label }}
         </button>
@@ -18,24 +18,24 @@
     </div>
 
     <!-- Rentals Table -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl overflow-hidden">
       <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-600">กำลังโหลดข้อมูล...</p>
+        <p class="text-slate-300">กำลังโหลดข้อมูล...</p>
       </div>
 
       <table v-else-if="rentals.length" class="w-full">
-        <thead class="bg-gray-100 border-b">
+        <thead class="bg-white/5 border-b border-white/10">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">เลขที่</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">ลูกค้า</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">วันที่เช่า</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">จำนวนเงิน</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">สถานะ</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">จัดการ</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-slate-200 uppercase">เลขที่</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-slate-200 uppercase">ลูกค้า</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-slate-200 uppercase">วันที่เช่า</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-slate-200 uppercase">จำนวนเงิน</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-slate-200 uppercase">สถานะ</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-slate-200 uppercase">จัดการ</th>
           </tr>
         </thead>
-        <tbody class="divide-y">
-          <tr v-for="rental in rentals" :key="rental.id" class="hover:bg-gray-50">
+        <tbody class="divide-y divide-white/5">
+          <tr v-for="rental in rentals" :key="rental.id" class="hover:bg-white/5">
             <td class="px-6 py-4">{{ rental.orderNumber }}</td>
             <td class="px-6 py-4">{{ rental.user?.profile?.firstName }} {{ rental.user?.profile?.lastName }}</td>
             <td class="px-6 py-4">{{ formatDate(rental.createdAt) }}</td>
@@ -52,7 +52,7 @@
               <div class="flex gap-2">
                 <router-link
                   :to="`/rentals/${rental.id}`"
-                  class="text-blue-600 hover:text-blue-800"
+                  class="text-amber-200 hover:text-white"
                   title="ดูรายละเอียด"
                 >
                   👁️
@@ -80,7 +80,7 @@
       </table>
 
       <div v-else class="text-center py-12">
-        <p class="text-gray-600">ไม่พบรายการเช่า</p>
+        <p class="text-slate-300">ไม่พบรายการเช่า</p>
       </div>
     </div>
 
@@ -91,7 +91,7 @@
         :key="page"
         @click="changePage(page)"
         class="px-4 py-2 rounded"
-        :class="pagination.page === page ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+        :class="pagination.page === page ? 'bg-blue-600 text-white' : 'bg-white text-slate-200 hover:bg-gray-100'"
       >
         {{ page }}
       </button>

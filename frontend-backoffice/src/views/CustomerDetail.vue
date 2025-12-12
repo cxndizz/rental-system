@@ -1,38 +1,38 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
+  <div class="min-h-screen text-slate-100 space-y-8">
     <div class="max-w-6xl mx-auto">
       <h1 class="text-4xl font-bold mb-8">รายละเอียดลูกค้า</h1>
 
       <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-600">กำลังโหลดข้อมูล...</p>
+        <p class="text-slate-300">กำลังโหลดข้อมูล...</p>
       </div>
 
       <div v-else-if="customer" class="space-y-6">
         <!-- Profile Info -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
           <h2 class="text-2xl font-bold mb-4">ข้อมูลส่วนตัว</h2>
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <p class="text-sm text-gray-600">ชื่อ-นามสกุล</p>
+              <p class="text-sm text-slate-300">ชื่อ-นามสกุล</p>
               <p class="font-semibold">{{ customer.profile?.firstName }} {{ customer.profile?.lastName }}</p>
             </div>
             <div>
-              <p class="text-sm text-gray-600">อีเมล</p>
+              <p class="text-sm text-slate-300">อีเมล</p>
               <p class="font-semibold">{{ customer.email }}</p>
             </div>
             <div>
-              <p class="text-sm text-gray-600">โทรศัพท์</p>
+              <p class="text-sm text-slate-300">โทรศัพท์</p>
               <p class="font-semibold">{{ customer.profile?.phoneNumber }}</p>
             </div>
             <div>
-              <p class="text-sm text-gray-600">วันที่สมัคร</p>
+              <p class="text-sm text-slate-300">วันที่สมัคร</p>
               <p class="font-semibold">{{ formatDate(customer.createdAt) }}</p>
             </div>
           </div>
         </div>
 
         <!-- KYC Info -->
-        <div v-if="customer.kyc" class="bg-white rounded-lg shadow-md p-6">
+        <div v-if="customer.kyc" class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
           <h2 class="text-2xl font-bold mb-4">ข้อมูล KYC</h2>
           <div class="mb-4">
             <span :class="getKYCClass(customer.kyc.status)" class="px-3 py-1 rounded text-sm font-semibold">
@@ -41,11 +41,11 @@
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <p class="text-sm text-gray-600">ประเภทบัตร</p>
+              <p class="text-sm text-slate-300">ประเภทบัตร</p>
               <p class="font-semibold">{{ customer.kyc.idCardType }}</p>
             </div>
             <div>
-              <p class="text-sm text-gray-600">เลขที่บัตร</p>
+              <p class="text-sm text-slate-300">เลขที่บัตร</p>
               <p class="font-semibold">{{ customer.kyc.idCardNumber }}</p>
             </div>
           </div>
@@ -67,9 +67,9 @@
         </div>
 
         <!-- Rental History -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="rounded-2xl bg-slate-900/70 border border-white/10 shadow-2xl p-6">
           <h2 class="text-2xl font-bold mb-4">ประวัติการเช่า</h2>
-          <p class="text-gray-600">จำนวนครั้งที่เช่า: {{ customer.rentalCount || 0 }}</p>
+          <p class="text-slate-300">จำนวนครั้งที่เช่า: {{ customer.rentalCount || 0 }}</p>
         </div>
       </div>
     </div>
