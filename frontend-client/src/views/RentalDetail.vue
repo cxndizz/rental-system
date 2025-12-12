@@ -1,150 +1,89 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
-    <div class="container mx-auto px-4 max-w-4xl">
-      <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-600">กำลังโหลดข้อมูล...</p>
-      </div>
+  <div class="lux-shell min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div class="mx-auto max-w-5xl px-4 py-10 space-y-6">
+      <div v-if="loading" class="glass-card rounded-3xl border-white/10 p-10 text-center text-slate-300">กำลังโหลดข้อมูล...</div>
 
-      <div v-else-if="rental" class="bg-white rounded-lg shadow-md overflow-hidden">
-        <!-- Header -->
-        <div class="bg-blue-600 text-white p-6">
-          <h1 class="text-3xl font-bold mb-2">รายละเอียดการเช่า</h1>
-          <p class="text-blue-100">เลขที่: {{ rental.orderNumber }}</p>
+      <div v-else-if="rental" class="glass-card overflow-hidden rounded-3xl border-white/10 shadow-2xl">
+        <div class="bg-gradient-to-r from-amber-300/20 via-white/5 to-emerald-300/20 p-6">
+          <p class="pill border-amber-200/60 bg-amber-200/10 text-amber-100">Rental Detail</p>
+          <h1 class="text-3xl font-bold leading-tight text-white">รายละเอียดการเช่า</h1>
+          <p class="text-slate-200">เลขที่: {{ rental.orderNumber }}</p>
         </div>
 
-        <!-- Status and Info -->
-        <div class="p-6 border-b">
-          <div class="flex justify-between items-start mb-4">
-            <div>
-              <span
-                class="px-4 py-2 rounded-full text-sm font-semibold inline-block"
-                :class="getStatusClass(rental.status)"
-              >
-                {{ getStatusText(rental.status) }}
-              </span>
+        <div class="space-y-6 p-6">
+          <div class="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 md:flex-row md:items-start md:justify-between">
+            <div class="space-y-1">
+              <p class="text-sm text-slate-300">วันที่สร้าง</p>
+              <p class="text-lg font-semibold text-white">{{ formatDate(rental.createdAt) }}</p>
+              <p class="text-sm text-slate-300">วันที่คืน: {{ rental.returnDate ? formatDate(rental.returnDate) : 'ยังไม่คืน' }}</p>
             </div>
-            <div class="text-right">
-              <p class="text-sm text-gray-600">วันที่สร้าง</p>
-              <p class="font-semibold">{{ formatDate(rental.createdAt) }}</p>
-            </div>
+            <span class="pill text-xs" :class="getStatusClass(rental.status)">{{ getStatusText(rental.status) }}</span>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <div>
-              <p class="text-sm text-gray-600">วันที่เริ่มเช่า</p>
-              <p class="font-semibold">{{ formatDate(rental.startDate) }}</p>
-            </div>
-            <div>
-              <p class="text-sm text-gray-600">วันที่สิ้นสุด</p>
-              <p class="font-semibold">{{ formatDate(rental.endDate) }}</p>
-            </div>
-            <div>
-              <p class="text-sm text-gray-600">วันที่คืน</p>
-              <p class="font-semibold">{{ rental.returnDate ? formatDate(rental.returnDate) : 'ยังไม่คืน' }}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Rental Items -->
-        <div class="p-6 border-b">
-          <h2 class="text-2xl font-bold mb-4">รายการสินค้า</h2>
-          <div class="space-y-4">
+          <div class="space-y-3">
+            <h2 class="text-xl font-semibold text-white">รายการสินค้า</h2>
             <div
               v-for="item in rental.items"
               :key="item.id"
-              class="flex gap-4 border-b pb-4 last:border-b-0"
+              class="glass-card flex gap-4 rounded-2xl border-white/5 p-4"
             >
-              <img
-                :src="item.item?.media?.[0]?.url || 'https://via.placeholder.com/150'"
-                :alt="item.item?.name"
-                class="w-24 h-24 object-cover rounded"
-              />
-              <div class="flex-1">
-                <h3 class="font-bold text-lg">{{ item.item?.name }}</h3>
-                <p class="text-gray-600 text-sm mb-2">{{ item.item?.description }}</p>
-                <div class="grid grid-cols-2 gap-2 text-sm">
-                  <div>
-                    <span class="text-gray-600">จำนวน:</span>
-                    <span class="font-semibold ml-1">{{ item.quantity }}</span>
-                  </div>
-                  <div>
-                    <span class="text-gray-600">ราคา/วัน:</span>
-                    <span class="font-semibold ml-1">{{ item.pricePerDay }} ฿</span>
-                  </div>
-                  <div>
-                    <span class="text-gray-600">จำนวนวัน:</span>
-                    <span class="font-semibold ml-1">{{ calculateDays(item.startDate, item.endDate) }} วัน</span>
-                  </div>
-                  <div>
-                    <span class="text-gray-600">รวม:</span>
-                    <span class="font-semibold ml-1 text-blue-600">{{ item.subtotal }} ฿</span>
-                  </div>
+              <img :src="item.item?.media?.[0]?.url || 'https://via.placeholder.com/150'" :alt="item.item?.name" class="h-24 w-24 rounded-xl object-cover" />
+              <div class="flex-1 space-y-1">
+                <h3 class="text-lg font-semibold text-white">{{ item.item?.name }}</h3>
+                <p class="text-sm text-slate-300">{{ item.item?.description }}</p>
+                <div class="grid grid-cols-2 gap-2 text-sm text-slate-300">
+                  <span>จำนวน: <strong class="text-white">{{ item.quantity }}</strong></span>
+                  <span>ราคา/วัน: <strong class="text-white">{{ item.pricePerDay }} ฿</strong></span>
+                  <span>จำนวนวัน: <strong class="text-white">{{ calculateDays(item.startDate, item.endDate) }} วัน</strong></span>
+                  <span>รวม: <strong class="text-amber-200">{{ item.subtotal }} ฿</strong></span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Payment Information -->
-        <div class="p-6 border-b">
-          <h2 class="text-2xl font-bold mb-4">ข้อมูลการชำระเงิน</h2>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-gray-600">ราคาเช่า</span>
-              <span class="font-semibold">{{ rental.totalPrice }} ฿</span>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="glass-card rounded-2xl border-white/10 p-4">
+              <h3 class="text-lg font-semibold text-white">ข้อมูลการชำระเงิน</h3>
+              <div class="mt-3 space-y-2 text-sm text-slate-300">
+                <div class="flex justify-between"><span>ราคาเช่า</span><span class="text-white font-semibold">{{ rental.totalPrice }} ฿</span></div>
+                <div class="flex justify-between"><span>ค่ามัดจำ</span><span class="text-white font-semibold">{{ rental.depositAmount || 0 }} ฿</span></div>
+                <div class="flex justify-between border-t border-white/10 pt-2 text-base font-bold text-amber-200">
+                  <span>รวมทั้งหมด</span>
+                  <span>{{ (rental.totalPrice || 0) + (rental.depositAmount || 0) }} ฿</span>
+                </div>
+              </div>
+              <div v-if="rental.invoice" class="mt-3 rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-slate-200">
+                เลขที่ใบแจ้งหนี้: {{ rental.invoice.invoiceNumber }} | สถานะ: {{ rental.invoice.status }}
+              </div>
             </div>
-            <div class="flex justify-between">
-              <span class="text-gray-600">ค่ามัดจำ</span>
-              <span class="font-semibold">{{ rental.depositAmount || 0 }} ฿</span>
-            </div>
-            <div class="flex justify-between border-t pt-2">
-              <span class="text-lg font-bold">รวมทั้งหมด</span>
-              <span class="text-lg font-bold text-blue-600">
-                {{ (rental.totalPrice || 0) + (rental.depositAmount || 0) }} ฿
-              </span>
+
+            <div v-if="rental.deliveryAddress" class="glass-card rounded-2xl border-white/10 p-4">
+              <h3 class="text-lg font-semibold text-white">ที่อยู่จัดส่ง</h3>
+              <p class="mt-2 text-slate-200">{{ rental.deliveryAddress }}</p>
             </div>
           </div>
 
-          <div v-if="rental.invoice" class="mt-4 p-4 bg-gray-50 rounded">
-            <p class="text-sm text-gray-600">เลขที่ใบแจ้งหนี้: {{ rental.invoice.invoiceNumber }}</p>
-            <p class="text-sm text-gray-600">สถานะ: {{ rental.invoice.status }}</p>
+          <div class="flex flex-wrap gap-3">
+            <router-link to="/rentals" class="ghost-btn px-4 py-2 text-sm">กลับ</router-link>
+            <button
+              v-if="rental.status === 'ON_RENT'"
+              @click="initiateReturn"
+              class="primary-btn px-4 py-2 text-sm"
+            >
+              คืนสินค้า
+            </button>
+            <button
+              v-if="rental.status === 'COMPLETED' && !rental.hasReview"
+              @click="router.push(`/reviews/create?rentalId=${rental.id}`)"
+              class="ghost-btn px-4 py-2 text-sm"
+            >
+              เขียนรีวิว
+            </button>
           </div>
         </div>
-
-        <!-- Delivery Address -->
-        <div v-if="rental.deliveryAddress" class="p-6 border-b">
-          <h2 class="text-2xl font-bold mb-4">ที่อยู่จัดส่ง</h2>
-          <p class="text-gray-700">{{ rental.deliveryAddress }}</p>
-        </div>
-
-        <!-- Actions -->
-        <div class="p-6 flex gap-4">
-          <router-link
-            to="/rentals"
-            class="px-6 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition"
-          >
-            กลับ
-          </router-link>
-          <button
-            v-if="rental.status === 'ON_RENT'"
-            @click="initiateReturn"
-            class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-          >
-            คืนสินค้า
-          </button>
-          <button
-            v-if="rental.status === 'COMPLETED' && !rental.hasReview"
-            @click="router.push(`/reviews/create?rentalId=${rental.id}`)"
-            class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            เขียนรีวิว
-          </button>
-        </div>
       </div>
 
-      <div v-else class="bg-white rounded-lg shadow-md p-12 text-center">
-        <p class="text-gray-600">ไม่พบข้อมูลการเช่า</p>
-      </div>
+      <div v-else class="glass-card rounded-3xl border-white/10 p-12 text-center text-slate-300">ไม่พบข้อมูลการเช่า</div>
     </div>
   </div>
 </template>
@@ -178,15 +117,15 @@ const loadRental = async () => {
 
 const getStatusClass = (status) => {
   const classes = {
-    PENDING: 'bg-yellow-100 text-yellow-800',
-    APPROVED: 'bg-blue-100 text-blue-800',
-    ON_RENT: 'bg-green-100 text-green-800',
-    RETURNED: 'bg-purple-100 text-purple-800',
-    COMPLETED: 'bg-gray-100 text-gray-800',
-    CANCELLED: 'bg-red-100 text-red-800',
-    OVERDUE: 'bg-red-200 text-red-900',
+    PENDING: 'border-amber-300/50 bg-amber-300/10 text-amber-100',
+    APPROVED: 'border-sky-300/50 bg-sky-300/10 text-sky-100',
+    ON_RENT: 'border-emerald-300/50 bg-emerald-300/10 text-emerald-100',
+    RETURNED: 'border-purple-300/50 bg-purple-300/10 text-purple-100',
+    COMPLETED: 'border-white/20 bg-white/5 text-slate-200',
+    CANCELLED: 'border-red-400/60 bg-red-400/10 text-red-100',
+    OVERDUE: 'border-amber-400/60 bg-amber-400/10 text-amber-100',
   };
-  return classes[status] || 'bg-gray-100 text-gray-800';
+  return classes[status] || 'border-white/10 bg-white/5 text-slate-200';
 };
 
 const getStatusText = (status) => {

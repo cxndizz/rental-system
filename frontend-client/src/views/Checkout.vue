@@ -1,178 +1,162 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
-    <div class="container mx-auto px-4 max-w-6xl">
-      <h1 class="text-4xl font-bold mb-8">ชำระเงิน</h1>
+  <div class="lux-shell min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div class="mx-auto max-w-6xl px-4 py-10 space-y-8">
+      <header class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div class="space-y-2">
+          <p class="pill border-amber-200/60 bg-amber-200/10 text-amber-100">Secure Checkout</p>
+          <h1 class="text-4xl font-bold leading-tight">ชำระเงิน</h1>
+          <p class="text-slate-300">ยืนยันคำสั่งเช่าในประสบการณ์ระดับ Luxury พร้อมความปลอดภัยแบบเอ็นเตอร์ไพรส์</p>
+        </div>
+        <div class="glass-card rounded-2xl border-emerald-300/30 bg-emerald-300/10 px-4 py-3 text-sm text-emerald-100">
+          ขั้นตอนสุดท้ายก่อนยืนยันคำสั่งเช่า
+        </div>
+      </header>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Cart Items & Form -->
-        <div class="lg:col-span-2 space-y-6">
-          <!-- Cart Items -->
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-2xl font-bold mb-4">รายการสินค้า</h2>
-            <div v-if="cart.length" class="space-y-4">
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div class="space-y-6 lg:col-span-2">
+          <div class="glass-card rounded-3xl border-white/10 p-6 shadow-2xl">
+            <div class="flex items-center justify-between">
+              <h2 class="text-2xl font-semibold">รายการสินค้า</h2>
+              <span class="pill border-white/10 bg-white/5 text-xs text-slate-200">{{ cart.length }} รายการ</span>
+            </div>
+            <div v-if="cart.length" class="mt-4 space-y-4">
               <div
                 v-for="(item, index) in cart"
                 :key="index"
-                class="flex gap-4 border-b pb-4 last:border-b-0"
+                class="glass-card flex gap-4 rounded-2xl border-white/5 p-4"
               >
                 <img
                   :src="item.item?.media?.[0]?.url || 'https://via.placeholder.com/100'"
                   :alt="item.item?.name"
-                  class="w-20 h-20 object-cover rounded"
+                  class="h-20 w-20 rounded-xl object-cover"
                 />
-                <div class="flex-1">
-                  <h3 class="font-semibold">{{ item.item?.name }}</h3>
-                  <p class="text-sm text-gray-600">
+                <div class="flex-1 space-y-1">
+                  <h3 class="text-lg font-semibold text-white">{{ item.item?.name }}</h3>
+                  <p class="text-xs uppercase tracking-[0.2em] text-slate-400">
                     {{ formatDate(item.startDate) }} - {{ formatDate(item.endDate) }}
                   </p>
-                  <p class="text-sm text-gray-600">จำนวน: {{ item.quantity }} | {{ item.days }} วัน</p>
+                  <p class="text-sm text-slate-300">จำนวน: {{ item.quantity }} | {{ item.days }} วัน</p>
                 </div>
-                <div class="text-right">
-                  <p class="font-bold text-blue-600">{{ item.totalPrice }} ฿</p>
-                  <button
-                    @click="removeFromCart(index)"
-                    class="text-red-600 hover:text-red-800 text-sm mt-2"
-                  >
-                    ลบ
-                  </button>
+                <div class="text-right space-y-2">
+                  <p class="text-xl font-bold text-amber-200">{{ item.totalPrice }} ฿</p>
+                  <button @click="removeFromCart(index)" class="text-sm text-slate-300 hover:text-amber-200">ลบ</button>
                 </div>
               </div>
             </div>
-            <p v-else class="text-gray-500 text-center py-4">ตะกร้าว่างเปล่า</p>
+            <p v-else class="py-6 text-center text-slate-300">ตะกร้าว่างเปล่า</p>
           </div>
 
-          <!-- Delivery Info -->
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-2xl font-bold mb-4">ข้อมูลการจัดส่ง</h2>
-            <form class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">ที่อยู่จัดส่ง *</label>
+          <div class="glass-card rounded-3xl border-white/10 p-6 shadow-2xl">
+            <h2 class="text-2xl font-semibold">ข้อมูลการจัดส่ง</h2>
+            <form class="mt-4 grid grid-cols-1 gap-4">
+              <div class="space-y-2">
+                <label class="text-sm font-semibold text-slate-200">ที่อยู่จัดส่ง *</label>
                 <textarea
                   v-model="form.deliveryAddress"
                   required
                   rows="3"
-                  class="w-full px-4 py-2 border rounded-lg"
+                  class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-400 focus:border-amber-200/60 focus:outline-none"
                   placeholder="กรอกที่อยู่สำหรับจัดส่ง"
                 ></textarea>
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">เบอร์โทรศัพท์ *</label>
+              <div class="space-y-2">
+                <label class="text-sm font-semibold text-slate-200">เบอร์โทรศัพท์ *</label>
                 <input
                   v-model="form.phoneNumber"
                   type="tel"
                   required
-                  class="w-full px-4 py-2 border rounded-lg"
+                  class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-400 focus:border-amber-200/60 focus:outline-none"
                   placeholder="0812345678"
                 />
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ</label>
+              <div class="space-y-2">
+                <label class="text-sm font-semibold text-slate-200">หมายเหตุ</label>
                 <textarea
                   v-model="form.notes"
                   rows="2"
-                  class="w-full px-4 py-2 border rounded-lg"
+                  class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-400 focus:border-amber-200/60 focus:outline-none"
                   placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)"
                 ></textarea>
               </div>
             </form>
           </div>
 
-          <!-- Payment Method -->
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-2xl font-bold mb-4">วิธีการชำระเงิน</h2>
-            <div class="space-y-3">
-              <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
-                <input
-                  v-model="form.paymentMethod"
-                  type="radio"
-                  value="CASH"
-                  class="mr-3"
-                />
+          <div class="glass-card rounded-3xl border-white/10 p-6 shadow-2xl">
+            <h2 class="text-2xl font-semibold">วิธีการชำระเงิน</h2>
+            <div class="mt-4 space-y-3">
+              <label class="glass-card flex cursor-pointer items-center gap-3 rounded-2xl border-white/10 p-4 hover:border-amber-200/40">
+                <input v-model="form.paymentMethod" type="radio" value="CASH" class="accent-amber-300" />
                 <div>
-                  <p class="font-semibold">เงินสด</p>
-                  <p class="text-sm text-gray-600">ชำระเงินสดเมื่อรับสินค้า</p>
+                  <p class="font-semibold text-white">เงินสด</p>
+                  <p class="text-sm text-slate-300">ชำระเงินสดเมื่อรับสินค้า</p>
                 </div>
               </label>
-              <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
-                <input
-                  v-model="form.paymentMethod"
-                  type="radio"
-                  value="TRANSFER"
-                  class="mr-3"
-                />
+              <label class="glass-card flex cursor-pointer items-center gap-3 rounded-2xl border-white/10 p-4 hover:border-amber-200/40">
+                <input v-model="form.paymentMethod" type="radio" value="TRANSFER" class="accent-amber-300" />
                 <div>
-                  <p class="font-semibold">โอนเงิน</p>
-                  <p class="text-sm text-gray-600">โอนเงินผ่านธนาคาร</p>
+                  <p class="font-semibold text-white">โอนเงิน</p>
+                  <p class="text-sm text-slate-300">โอนเงินผ่านธนาคาร</p>
                 </div>
               </label>
-              <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
-                <input
-                  v-model="form.paymentMethod"
-                  type="radio"
-                  value="CREDIT_CARD"
-                  class="mr-3"
-                />
+              <label class="glass-card flex cursor-pointer items-center gap-3 rounded-2xl border-white/10 p-4 hover:border-amber-200/40">
+                <input v-model="form.paymentMethod" type="radio" value="CREDIT_CARD" class="accent-amber-300" />
                 <div>
-                  <p class="font-semibold">บัตรเครดิต</p>
-                  <p class="text-sm text-gray-600">ชำระผ่านบัตรเครดิต/เดบิต</p>
+                  <p class="font-semibold text-white">บัตรเครดิต</p>
+                  <p class="text-sm text-slate-300">ชำระผ่านบัตรเครดิต/เดบิต</p>
                 </div>
               </label>
             </div>
           </div>
         </div>
 
-        <!-- Order Summary -->
         <div class="lg:col-span-1">
-          <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
-            <h2 class="text-2xl font-bold mb-4">สรุปคำสั่งเช่า</h2>
-            <div class="space-y-3 mb-4">
-              <div class="flex justify-between">
-                <span class="text-gray-600">ราคาเช่า</span>
-                <span class="font-semibold">{{ totalPrice }} ฿</span>
+          <div class="glass-card sticky top-6 rounded-3xl border-white/10 p-6 shadow-2xl">
+            <div class="flex items-center justify-between">
+              <h2 class="text-2xl font-semibold">สรุปคำสั่งเช่า</h2>
+              <span class="pill border-amber-300/50 bg-amber-300/10 text-amber-100">ตรวจสอบ</span>
+            </div>
+            <div class="mt-4 space-y-3">
+              <div class="flex justify-between text-sm text-slate-300">
+                <span>ราคาเช่า</span>
+                <span class="font-semibold text-white">{{ totalPrice }} ฿</span>
               </div>
-              <div class="flex justify-between">
-                <span class="text-gray-600">ค่ามัดจำ</span>
-                <span class="font-semibold">{{ totalDeposit }} ฿</span>
+              <div class="flex justify-between text-sm text-slate-300">
+                <span>ค่ามัดจำ</span>
+                <span class="font-semibold text-white">{{ totalDeposit }} ฿</span>
               </div>
-              <div class="flex justify-between">
-                <span class="text-gray-600">ค่าจัดส่ง</span>
-                <span class="font-semibold">{{ deliveryFee }} ฿</span>
+              <div class="flex justify-between text-sm text-slate-300">
+                <span>ค่าจัดส่ง</span>
+                <span class="font-semibold text-white">{{ deliveryFee }} ฿</span>
               </div>
-              <div v-if="discount > 0" class="flex justify-between text-green-600">
+              <div v-if="discount > 0" class="flex justify-between text-sm text-emerald-200">
                 <span>ส่วนลด</span>
                 <span class="font-semibold">-{{ discount }} ฿</span>
               </div>
-              <div class="border-t pt-3">
-                <div class="flex justify-between items-center">
+              <div class="border-t border-white/10 pt-3">
+                <div class="flex items-center justify-between">
                   <span class="text-xl font-bold">รวมทั้งหมด</span>
-                  <span class="text-2xl font-bold text-blue-600">{{ grandTotal }} ฿</span>
+                  <span class="text-2xl font-extrabold text-amber-200">{{ grandTotal }} ฿</span>
                 </div>
               </div>
             </div>
 
-            <!-- Coupon -->
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-1">รหัสคูปอง</label>
-              <div class="flex gap-2">
+            <div class="mt-4">
+              <label class="text-sm font-semibold text-slate-200">รหัสคูปอง</label>
+              <div class="mt-2 flex gap-2">
                 <input
                   v-model="couponCode"
                   type="text"
-                  class="flex-1 px-4 py-2 border rounded-lg"
+                  class="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-400 focus:border-amber-200/60 focus:outline-none"
                   placeholder="กรอกรหัสคูปอง"
                 />
-                <button
-                  @click="applyCoupon"
-                  class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
-                >
-                  ใช้
-                </button>
+                <button @click="applyCoupon" class="ghost-btn whitespace-nowrap px-4 py-3">ใช้</button>
               </div>
             </div>
 
             <button
               @click="submitOrder"
               :disabled="!cart.length || !form.deliveryAddress || !form.paymentMethod || loading"
-              class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold disabled:bg-gray-400"
+              class="primary-btn mt-6 w-full justify-center"
             >
               {{ loading ? 'กำลังดำเนินการ...' : 'ยืนยันการเช่า' }}
             </button>

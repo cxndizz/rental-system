@@ -1,119 +1,96 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
-    <div class="container mx-auto px-4">
-      <h1 class="text-4xl font-bold mb-8">รายการเช่าของฉัน</h1>
+  <div class="lux-shell min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div class="mx-auto max-w-7xl px-4 py-10 space-y-8">
+      <div class="flex flex-col gap-2">
+        <p class="pill border-amber-200/60 bg-amber-200/10 text-amber-100">Rental Portfolio</p>
+        <h1 class="text-4xl font-bold leading-tight">รายการเช่าของฉัน</h1>
+        <p class="text-slate-300">ติดตามสถานะคำสั่งเช่าแบบเรียลไทม์ พร้อมสรุปค่าใช้จ่ายอย่างโปร่งใส</p>
+      </div>
 
-      <!-- Filter Tabs -->
-      <div class="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
-        <div class="flex border-b">
+      <div class="glass-card overflow-hidden rounded-2xl border-white/10">
+        <div class="flex flex-wrap">
           <button
             v-for="tab in tabs"
             :key="tab.value"
             @click="currentTab = tab.value"
-            class="flex-1 px-6 py-4 font-semibold transition"
-            :class="currentTab === tab.value ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'"
+            class="flex-1 px-6 py-4 text-sm font-semibold uppercase tracking-[0.2em] transition"
+            :class="currentTab === tab.value ? 'bg-amber-300 text-slate-900' : 'text-slate-200 hover:bg-white/5'"
           >
             {{ tab.label }}
           </button>
         </div>
       </div>
 
-      <!-- Rentals List -->
-      <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-600">กำลังโหลดข้อมูล...</p>
-      </div>
+      <div v-if="loading" class="glass-card rounded-3xl border-white/10 p-10 text-center text-slate-300">กำลังโหลดข้อมูล...</div>
 
       <div v-else-if="filteredRentals.length" class="space-y-4">
         <div
           v-for="rental in filteredRentals"
           :key="rental.id"
-          class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition"
+          class="glass-card overflow-hidden rounded-3xl border-white/10 p-6 shadow-xl"
         >
-          <div class="p-6">
-            <div class="flex justify-between items-start mb-4">
-              <div>
-                <h3 class="text-xl font-bold mb-1">{{ rental.orderNumber }}</h3>
-                <p class="text-sm text-gray-600">{{ formatDate(rental.createdAt) }}</p>
-              </div>
-              <span
-                class="px-3 py-1 rounded-full text-sm font-semibold"
-                :class="getStatusClass(rental.status)"
-              >
-                {{ getStatusText(rental.status) }}
-              </span>
+          <div class="flex flex-col gap-4 border-b border-white/10 pb-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p class="text-xs uppercase tracking-[0.2em] text-slate-300">เลขที่คำสั่ง</p>
+              <h3 class="text-xl font-semibold text-white">{{ rental.orderNumber }}</h3>
+              <p class="text-sm text-slate-300">{{ formatDate(rental.createdAt) }}</p>
             </div>
+            <span class="pill self-start text-xs" :class="getStatusClass(rental.status)">{{ getStatusText(rental.status) }}</span>
+          </div>
 
-            <!-- Rental Items -->
-            <div class="space-y-3 mb-4">
-              <div
-                v-for="item in rental.items"
-                :key="item.id"
-                class="flex gap-4 border-b pb-3 last:border-b-0"
-              >
-                <img
-                  :src="item.item?.media?.[0]?.url || 'https://via.placeholder.com/100'"
-                  :alt="item.item?.name"
-                  class="w-20 h-20 object-cover rounded"
-                />
-                <div class="flex-1">
-                  <h4 class="font-semibold">{{ item.item?.name }}</h4>
-                  <p class="text-sm text-gray-600">จำนวน: {{ item.quantity }} | ราคา/วัน: {{ item.pricePerDay }} ฿</p>
-                  <p class="text-sm text-gray-600">
-                    {{ formatDate(item.startDate) }} - {{ formatDate(item.endDate) }}
-                    ({{ calculateDays(item.startDate, item.endDate) }} วัน)
-                  </p>
-                </div>
-                <div class="text-right">
-                  <p class="font-bold text-blue-600">{{ item.subtotal }} ฿</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex justify-between items-center border-t pt-4">
-              <div>
-                <p class="text-lg font-bold">ราคารวม: {{ rental.totalPrice }} ฿</p>
-                <p class="text-sm text-gray-600">
-                  วันที่คืน: {{ rental.returnDate ? formatDate(rental.returnDate) : 'ยังไม่คืน' }}
+          <div class="space-y-3 py-4">
+            <div
+              v-for="item in rental.items"
+              :key="item.id"
+              class="glass-card flex gap-4 rounded-2xl border-white/5 p-4"
+            >
+              <img
+                :src="item.item?.media?.[0]?.url || 'https://via.placeholder.com/100'"
+                :alt="item.item?.name"
+                class="h-20 w-20 rounded-xl object-cover"
+              />
+              <div class="flex-1 space-y-1">
+                <h4 class="text-lg font-semibold text-white">{{ item.item?.name }}</h4>
+                <p class="text-sm text-slate-300">จำนวน: {{ item.quantity }} | ราคา/วัน: {{ item.pricePerDay }} ฿</p>
+                <p class="text-sm text-slate-400">
+                  {{ formatDate(item.startDate) }} - {{ formatDate(item.endDate) }} ({{ calculateDays(item.startDate, item.endDate) }} วัน)
                 </p>
               </div>
-              <div class="flex gap-2">
-                <router-link
-                  :to="`/rentals/${rental.id}`"
-                  class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                >
-                  ดูรายละเอียด
-                </router-link>
-                <button
-                  v-if="rental.status === 'ON_RENT'"
-                  @click="initiateReturn(rental.id)"
-                  class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-                >
-                  คืนสินค้า
-                </button>
-              </div>
+              <div class="text-right text-amber-200 font-bold">{{ item.subtotal }} ฿</div>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-3 border-t border-white/10 pt-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p class="text-lg font-bold text-white">ราคารวม: {{ rental.totalPrice }} ฿</p>
+              <p class="text-sm text-slate-300">วันที่คืน: {{ rental.returnDate ? formatDate(rental.returnDate) : 'ยังไม่คืน' }}</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <router-link :to="`/rentals/${rental.id}`" class="ghost-btn px-4 py-2 text-sm">ดูรายละเอียด</router-link>
+              <button
+                v-if="rental.status === 'ON_RENT'"
+                @click="initiateReturn(rental.id)"
+                class="primary-btn px-4 py-2 text-sm"
+              >
+                คืนสินค้า
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div v-else class="bg-white rounded-lg shadow-md p-12 text-center">
-        <p class="text-gray-600 text-lg">ไม่พบรายการเช่า</p>
-        <router-link
-          to="/items"
-          class="inline-block mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-        >
-          เรียกดูสินค้า
-        </router-link>
+      <div v-else class="glass-card rounded-3xl border-white/10 p-12 text-center text-slate-300">
+        <p class="text-lg">ไม่พบรายการเช่า</p>
+        <router-link to="/items" class="primary-btn mt-4 inline-flex px-6 py-2">เรียกดูสินค้า</router-link>
       </div>
 
-      <!-- Pagination -->
-      <div v-if="pagination.totalPages > 1" class="flex justify-center mt-8 gap-2">
+      <div v-if="pagination.totalPages > 1" class="flex justify-center gap-2">
         <button
           v-for="page in pagination.totalPages"
           :key="page"
           @click="changePage(page)"
-          class="px-4 py-2 rounded"
-          :class="pagination.page === page ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+          class="rounded-xl px-4 py-2 text-sm font-semibold"
+          :class="pagination.page === page ? 'bg-amber-300 text-slate-900' : 'glass-card border-white/10 text-white'"
         >
           {{ page }}
         </button>
@@ -179,15 +156,15 @@ const changePage = (page) => {
 
 const getStatusClass = (status) => {
   const classes = {
-    PENDING: 'bg-yellow-100 text-yellow-800',
-    APPROVED: 'bg-blue-100 text-blue-800',
-    ON_RENT: 'bg-green-100 text-green-800',
-    RETURNED: 'bg-purple-100 text-purple-800',
-    COMPLETED: 'bg-gray-100 text-gray-800',
-    CANCELLED: 'bg-red-100 text-red-800',
-    OVERDUE: 'bg-red-200 text-red-900',
+    PENDING: 'border-amber-300/50 bg-amber-300/10 text-amber-100',
+    APPROVED: 'border-sky-300/50 bg-sky-300/10 text-sky-100',
+    ON_RENT: 'border-emerald-300/50 bg-emerald-300/10 text-emerald-100',
+    RETURNED: 'border-purple-300/50 bg-purple-300/10 text-purple-100',
+    COMPLETED: 'border-white/20 bg-white/5 text-slate-200',
+    CANCELLED: 'border-red-400/60 bg-red-400/10 text-red-100',
+    OVERDUE: 'border-amber-400/60 bg-amber-400/10 text-amber-100',
   };
-  return classes[status] || 'bg-gray-100 text-gray-800';
+  return classes[status] || 'border-white/10 bg-white/5 text-slate-200';
 };
 
 const getStatusText = (status) => {

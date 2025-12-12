@@ -1,154 +1,149 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
-    <div class="container mx-auto px-4 max-w-2xl">
-      <div class="bg-white rounded-lg shadow-md p-8">
-        <h1 class="text-3xl font-bold mb-2">ยืนยันตัวตน (KYC)</h1>
-        <p class="text-gray-600 mb-8">กรุณากรอกข้อมูลเพื่อยืนยันตัวตนของคุณ</p>
-
-        <div v-if="kycStatus === 'APPROVED'" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-          <p class="font-semibold">✓ บัญชีของคุณได้รับการยืนยันแล้ว</p>
+  <div class="lux-shell min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div class="mx-auto max-w-3xl px-4 py-10">
+      <div class="glass-card rounded-3xl border-white/10 p-8 shadow-2xl">
+        <div class="flex flex-col gap-2">
+          <p class="pill border-amber-200/60 bg-amber-200/10 text-amber-100">Identity Verification</p>
+          <h1 class="text-3xl font-bold leading-tight">ยืนยันตัวตน (KYC)</h1>
+          <p class="text-slate-300">กรุณากรอกข้อมูลเพื่อล็อกอินประสบการณ์ความปลอดภัยระดับเอ็นเตอร์ไพรส์</p>
         </div>
 
-        <div v-else-if="kycStatus === 'PENDING'" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6">
-          <p class="font-semibold">⏳ ข้อมูลของคุณอยู่ระหว่างการตรวจสอบ</p>
+        <div v-if="kycStatus === 'APPROVED'" class="mt-6 rounded-2xl border border-emerald-300/50 bg-emerald-300/10 px-4 py-3 text-emerald-100">
+          ✓ บัญชีของคุณได้รับการยืนยันแล้ว
+        </div>
+        <div v-else-if="kycStatus === 'PENDING'" class="mt-6 rounded-2xl border border-amber-300/50 bg-amber-300/10 px-4 py-3 text-amber-100">
+          ⏳ ข้อมูลของคุณอยู่ระหว่างการตรวจสอบ
+        </div>
+        <div v-else-if="kycStatus === 'REJECTED'" class="mt-6 rounded-2xl border border-red-400/50 bg-red-400/10 px-4 py-3 text-red-100">
+          ✗ ข้อมูลของคุณไม่ผ่านการตรวจสอบ กรุณากรอกข้อมูลใหม่
         </div>
 
-        <div v-else-if="kycStatus === 'REJECTED'" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-          <p class="font-semibold">✗ ข้อมูลของคุณไม่ผ่านการตรวจสอบ กรุณากรอกข้อมูลใหม่</p>
-        </div>
-
-        <form v-if="!kycStatus || kycStatus === 'REJECTED'" @submit.prevent="submitKYC" class="space-y-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทบัตร *</label>
-            <select v-model="form.idCardType" required class="w-full px-4 py-2 border rounded-lg">
-              <option value="">เลือกประเภทบัตร</option>
-              <option value="NATIONAL_ID">บัตรประชาชน</option>
-              <option value="PASSPORT">พาสปอร์ต</option>
-              <option value="DRIVER_LICENSE">ใบขับขี่</option>
-            </select>
+        <form v-if="!kycStatus || kycStatus === 'REJECTED'" @submit.prevent="submitKYC" class="mt-8 space-y-6">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-slate-200">ประเภทบัตร *</label>
+              <select
+                v-model="form.idCardType"
+                required
+                class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white focus:border-amber-200/60 focus:outline-none"
+              >
+                <option value="" class="bg-slate-900 text-white">เลือกประเภทบัตร</option>
+                <option value="NATIONAL_ID" class="bg-slate-900 text-white">บัตรประชาชน</option>
+                <option value="PASSPORT" class="bg-slate-900 text-white">พาสปอร์ต</option>
+                <option value="DRIVER_LICENSE" class="bg-slate-900 text-white">ใบขับขี่</option>
+              </select>
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-slate-200">เลขที่บัตร *</label>
+              <input
+                v-model="form.idCardNumber"
+                type="text"
+                required
+                maxlength="20"
+                class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white focus:border-amber-200/60 focus:outline-none"
+                placeholder="เลขที่บัตรประจำตัว"
+              />
+            </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">เลขที่บัตร *</label>
-            <input
-              v-model="form.idCardNumber"
-              type="text"
-              required
-              maxlength="20"
-              class="w-full px-4 py-2 border rounded-lg"
-              placeholder="เลขที่บัตรประจำตัว"
-            />
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-slate-200">ชื่อ-นามสกุล *</label>
+              <input
+                v-model="form.fullName"
+                type="text"
+                required
+                class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white focus:border-amber-200/60 focus:outline-none"
+                placeholder="ชื่อ-นามสกุล"
+              />
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-slate-200">วันเกิด *</label>
+              <input
+                v-model="form.dateOfBirth"
+                type="date"
+                required
+                class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white focus:border-amber-200/60 focus:outline-none"
+                :max="maxBirthDate"
+              />
+            </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ-นามสกุล (ตรงตามบัตร) *</label>
-            <input
-              v-model="form.fullName"
-              type="text"
-              required
-              class="w-full px-4 py-2 border rounded-lg"
-              placeholder="ชื่อ-นามสกุล"
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">วันเกิด *</label>
-            <input
-              v-model="form.dateOfBirth"
-              type="date"
-              required
-              class="w-full px-4 py-2 border rounded-lg"
-              :max="maxBirthDate"
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">ที่อยู่ *</label>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-slate-200">ที่อยู่ *</label>
             <textarea
               v-model="form.address"
               required
               rows="3"
-              class="w-full px-4 py-2 border rounded-lg"
+              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-400 focus:border-amber-200/60 focus:outline-none"
               placeholder="ที่อยู่ตามบัตรประจำตัว"
             ></textarea>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">เบอร์โทรศัพท์ *</label>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-slate-200">เบอร์โทรศัพท์ *</label>
             <input
               v-model="form.phoneNumber"
               type="tel"
               required
               pattern="[0-9]{10}"
               maxlength="10"
-              class="w-full px-4 py-2 border rounded-lg"
+              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-400 focus:border-amber-200/60 focus:outline-none"
               placeholder="0812345678"
             />
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">อัพโหลดรูปบัตรประจำตัว (ด้านหน้า) *</label>
-            <input
-              type="file"
-              accept="image/*"
-              required
-              @change="handleFileUpload($event, 'frontImage')"
-              class="w-full px-4 py-2 border rounded-lg"
-            />
-            <p class="text-xs text-gray-500 mt-1">รองรับไฟล์: JPG, PNG ขนาดไม่เกิน 5MB</p>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-slate-200">บัตรประจำตัว (หน้า) *</label>
+              <input
+                type="file"
+                accept="image/*"
+                required
+                @change="handleFileUpload($event, 'frontImage')"
+                class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200"
+              />
+              <p class="text-xs text-slate-400">JPG, PNG ≤ 5MB</p>
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-slate-200">บัตรประจำตัว (หลัง) *</label>
+              <input
+                type="file"
+                accept="image/*"
+                required
+                @change="handleFileUpload($event, 'backImage')"
+                class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200"
+              />
+              <p class="text-xs text-slate-400">JPG, PNG ≤ 5MB</p>
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-slate-200">รูปถ่ายคู่บัตร *</label>
+              <input
+                type="file"
+                accept="image/*"
+                required
+                @change="handleFileUpload($event, 'selfieImage')"
+                class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200"
+              />
+              <p class="text-xs text-slate-400">เพื่อยืนยันตัวตน</p>
+            </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">อัพโหลดรูปบัตรประจำตัว (ด้านหลัง) *</label>
-            <input
-              type="file"
-              accept="image/*"
-              required
-              @change="handleFileUpload($event, 'backImage')"
-              class="w-full px-4 py-2 border rounded-lg"
-            />
-            <p class="text-xs text-gray-500 mt-1">รองรับไฟล์: JPG, PNG ขนาดไม่เกิน 5MB</p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">อัพโหลดรูปถ่ายคู่บัตร *</label>
-            <input
-              type="file"
-              accept="image/*"
-              required
-              @change="handleFileUpload($event, 'selfieImage')"
-              class="w-full px-4 py-2 border rounded-lg"
-            />
-            <p class="text-xs text-gray-500 mt-1">รูปถ่ายคู่กับบัตรประจำตัว</p>
-          </div>
-
-          <div class="flex items-start">
-            <input
-              v-model="form.acceptTerms"
-              type="checkbox"
-              required
-              class="mt-1 mr-2"
-              id="terms"
-            />
-            <label for="terms" class="text-sm text-gray-700">
-              ข้าพเจ้ายอมรับ <a href="#" class="text-blue-600 hover:underline">เงื่อนไขและข้อตกลง</a>
+          <div class="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-200">
+            <input v-model="form.acceptTerms" type="checkbox" required class="mt-1 h-4 w-4 rounded border-white/20 bg-transparent" />
+            <p>
+              ข้าพเจ้ายอมรับ <a href="#" class="text-amber-200 underline">เงื่อนไขและข้อตกลง</a>
               และยืนยันว่าข้อมูลที่ให้มานั้นเป็นความจริง
-            </label>
+            </p>
           </div>
 
-          <button
-            type="submit"
-            :disabled="loading"
-            class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold disabled:bg-gray-400"
-          >
+          <button type="submit" :disabled="loading" class="primary-btn w-full justify-center">
             {{ loading ? 'กำลังส่งข้อมูล...' : 'ส่งข้อมูลยืนยันตัวตน' }}
           </button>
         </form>
 
-        <div v-if="kycStatus === 'APPROVED'" class="text-center">
-          <router-link to="/dashboard" class="text-blue-600 hover:underline">
-            กลับไปที่แดชบอร์ด
-          </router-link>
+        <div v-if="kycStatus === 'APPROVED'" class="mt-6 text-center text-slate-200">
+          <router-link to="/dashboard" class="text-amber-200">กลับไปที่แดชบอร์ด</router-link>
         </div>
       </div>
     </div>
