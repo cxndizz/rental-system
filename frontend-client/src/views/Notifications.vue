@@ -1,82 +1,70 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
-    <div class="container mx-auto px-4 max-w-4xl">
-      <div class="flex justify-between items-center mb-8">
-        <h1 class="text-4xl font-bold">การแจ้งเตือน</h1>
+  <div class="lux-shell min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div class="mx-auto max-w-5xl px-4 py-10 space-y-6">
+      <div class="flex items-center justify-between">
+        <div class="space-y-2">
+          <p class="pill border-amber-200/60 bg-amber-200/10 text-amber-100">Notification Hub</p>
+          <h1 class="text-3xl font-bold">การแจ้งเตือน</h1>
+          <p class="text-slate-300">อัปเดตสถานะคำสั่งเช่า โปรโมชัน และข้อมูลสำคัญแบบเรียลไทม์</p>
+        </div>
         <button
           v-if="unreadCount > 0"
           @click="markAllAsRead"
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
+          class="ghost-btn px-4 py-2 text-sm"
         >
           ทำเครื่องหมายทั้งหมดว่าอ่านแล้ว
         </button>
       </div>
 
-      <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-600">กำลังโหลดข้อมูล...</p>
-      </div>
+      <div v-if="loading" class="glass-card rounded-3xl border-white/10 p-10 text-center text-slate-300">กำลังโหลดข้อมูล...</div>
 
       <div v-else-if="notifications.length" class="space-y-3">
         <div
           v-for="notification in notifications"
           :key="notification.id"
-          class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition"
-          :class="{ 'border-l-4 border-blue-600': !notification.isRead }"
+          class="glass-card rounded-2xl border-white/10 p-5 shadow-xl"
+          :class="{ 'border-amber-300/50 bg-amber-300/10': !notification.isRead }"
         >
-          <div class="p-6">
-            <div class="flex justify-between items-start mb-2">
-              <div class="flex items-start gap-3 flex-1">
-                <div
-                  class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                  :class="getIconClass(notification.type)"
-                >
-                  {{ getIcon(notification.type) }}
-                </div>
-                <div class="flex-1">
-                  <h3 class="font-semibold text-lg mb-1">{{ notification.title }}</h3>
-                  <p class="text-gray-700">{{ notification.message }}</p>
-                  <p class="text-sm text-gray-500 mt-2">{{ formatDate(notification.createdAt) }}</p>
-                </div>
-              </div>
-              <div class="flex gap-2 ml-4">
-                <button
-                  v-if="!notification.isRead"
-                  @click="markAsRead(notification.id)"
-                  class="text-blue-600 hover:text-blue-800 text-sm"
-                  title="ทำเครื่องหมายว่าอ่านแล้ว"
-                >
-                  ✓
-                </button>
-              </div>
-            </div>
-
-            <div v-if="notification.actionUrl" class="mt-4">
-              <router-link
-                :to="notification.actionUrl"
-                class="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex flex-1 items-start gap-3">
+              <div
+                class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5"
+                :class="getIconClass(notification.type)"
               >
-                ดูรายละเอียด
-              </router-link>
+                {{ getIcon(notification.type) }}
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-lg font-semibold text-white">{{ notification.title }}</h3>
+                <p class="text-sm text-slate-200">{{ notification.message }}</p>
+                <p class="text-xs text-slate-400">{{ formatDate(notification.createdAt) }}</p>
+              </div>
             </div>
+            <button
+              v-if="!notification.isRead"
+              @click="markAsRead(notification.id)"
+              class="text-sm text-amber-200 hover:text-amber-100"
+              title="ทำเครื่องหมายว่าอ่านแล้ว"
+            >
+              ✓
+            </button>
+          </div>
+          <div v-if="notification.actionUrl" class="mt-3">
+            <router-link :to="notification.actionUrl" class="primary-btn px-4 py-2 text-xs">ดูรายละเอียด</router-link>
           </div>
         </div>
       </div>
 
-      <div v-else class="bg-white rounded-lg shadow-md p-12 text-center">
-        <svg class="w-24 h-24 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg>
-        <p class="text-gray-600 text-lg">ไม่มีการแจ้งเตือน</p>
+      <div v-else class="glass-card rounded-3xl border-white/10 p-12 text-center text-slate-300">
+        <p class="text-lg">ไม่มีการแจ้งเตือน</p>
       </div>
 
-      <!-- Pagination -->
-      <div v-if="pagination.totalPages > 1" class="flex justify-center mt-8 gap-2">
+      <div v-if="pagination.totalPages > 1" class="flex justify-center gap-2">
         <button
           v-for="page in pagination.totalPages"
           :key="page"
           @click="changePage(page)"
-          class="px-4 py-2 rounded"
-          :class="pagination.page === page ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+          class="rounded-xl px-4 py-2 text-sm font-semibold"
+          :class="pagination.page === page ? 'bg-amber-300 text-slate-900' : 'glass-card border-white/10 text-white'"
         >
           {{ page }}
         </button>
@@ -134,7 +122,7 @@ const markAllAsRead = async () => {
   try {
     const unread = notifications.value.filter(n => !n.isRead);
     await Promise.all(unread.map(n => notificationsAPI.markAsRead(n.id)));
-    notifications.value.forEach(n => n.isRead = true);
+    notifications.value.forEach(n => (n.isRead = true));
   } catch (error) {
     console.error('Error marking all as read:', error);
   }
@@ -147,13 +135,13 @@ const changePage = (page) => {
 
 const getIconClass = (type) => {
   const classes = {
-    ORDER: 'bg-blue-100 text-blue-600',
-    PAYMENT: 'bg-green-100 text-green-600',
-    RETURN: 'bg-purple-100 text-purple-600',
-    PROMOTION: 'bg-yellow-100 text-yellow-600',
-    SYSTEM: 'bg-gray-100 text-gray-600',
+    ORDER: 'border-amber-300/50 bg-amber-300/10 text-amber-100',
+    PAYMENT: 'border-emerald-300/50 bg-emerald-300/10 text-emerald-100',
+    RETURN: 'border-purple-300/50 bg-purple-300/10 text-purple-100',
+    PROMOTION: 'border-sky-300/50 bg-sky-300/10 text-sky-100',
+    SYSTEM: 'border-white/20 bg-white/5 text-slate-200',
   };
-  return classes[type] || 'bg-gray-100 text-gray-600';
+  return classes[type] || 'border-white/10 bg-white/5 text-slate-200';
 };
 
 const getIcon = (type) => {

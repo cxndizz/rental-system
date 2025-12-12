@@ -1,104 +1,93 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
-    <div class="container mx-auto px-4">
-      <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-600">กำลังโหลดข้อมูล...</p>
-      </div>
+  <div class="lux-shell min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div class="mx-auto max-w-6xl px-4 py-10">
+      <div v-if="loading" class="glass-card rounded-3xl border-white/10 p-10 text-center text-slate-300">กำลังโหลดข้อมูล...</div>
 
-      <div v-else-if="item" class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-          <!-- Image Gallery -->
-          <div>
-            <img
-              :src="currentImage"
-              :alt="item.name"
-              class="w-full h-96 object-cover rounded-lg mb-4"
-            />
-            <div class="grid grid-cols-4 gap-2">
-              <img
-                v-for="(media, index) in item.media"
-                :key="index"
-                :src="media.url"
-                :alt="`${item.name} - ${index + 1}`"
-                class="w-full h-20 object-cover rounded cursor-pointer hover:opacity-75 transition"
-                :class="{ 'ring-2 ring-blue-600': currentImage === media.url }"
-                @click="currentImage = media.url"
-              />
-            </div>
-          </div>
-
-          <!-- Item Details -->
-          <div>
-            <h1 class="text-3xl font-bold mb-2">{{ item.name }}</h1>
-            <div class="flex items-center mb-4">
-              <span class="text-yellow-500 text-lg">⭐ {{ item.averageRating?.toFixed(1) || 'N/A' }}</span>
-              <span class="text-gray-500 ml-2">({{ item.reviewCount || 0 }} รีวิว)</span>
+      <div v-else-if="item" class="space-y-6">
+        <div class="glass-card overflow-hidden rounded-3xl border-white/10 shadow-2xl">
+          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 p-6 md:p-10">
+            <div class="space-y-4">
+              <div class="relative overflow-hidden rounded-3xl">
+                <img :src="currentImage" :alt="item.name" class="h-96 w-full rounded-3xl object-cover" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10" />
+                <span class="pill absolute left-4 top-4 border-white/20 bg-white/10 text-xs text-slate-100">{{ item.category?.name || 'Luxury Item' }}</span>
+              </div>
+              <div class="grid grid-cols-4 gap-2">
+                <img
+                  v-for="(media, index) in item.media"
+                  :key="index"
+                  :src="media.url"
+                  :alt="`${item.name} - ${index + 1}`"
+                  class="h-20 w-full cursor-pointer rounded-xl object-cover transition hover:opacity-80"
+                  :class="{ 'ring-2 ring-amber-300': currentImage === media.url }"
+                  @click="currentImage = media.url"
+                />
+              </div>
             </div>
 
-            <div class="mb-6">
-              <span class="text-3xl font-bold text-blue-600">{{ item.pricePerDay }} ฿/วัน</span>
-              <span class="text-gray-500 ml-2">+ {{ item.depositAmount }} ฿ มัดจำ</span>
-            </div>
-
-            <div class="mb-6">
-              <p class="text-gray-700">{{ item.description }}</p>
-            </div>
-
-            <div class="mb-6">
-              <p class="text-sm text-gray-600 mb-2">
-                <span class="font-semibold">สถานะ:</span>
-                <span :class="item.status === 'AVAILABLE' ? 'text-green-600' : 'text-red-600'">
-                  {{ item.status === 'AVAILABLE' ? 'พร้อมให้เช่า' : 'ไม่พร้อมให้เช่า' }}
-                </span>
-              </p>
-              <p class="text-sm text-gray-600">
-                <span class="font-semibold">หมวดหมู่:</span> {{ item.category?.name }}
-              </p>
-            </div>
-
-            <!-- Rental Form -->
-            <div v-if="item.status === 'AVAILABLE'" class="border-t pt-6">
-              <h3 class="text-xl font-semibold mb-4">เช่าสินค้านี้</h3>
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">วันที่เริ่มเช่า</label>
-                  <input
-                    v-model="rentalForm.startDate"
-                    type="date"
-                    class="w-full px-4 py-2 border rounded-lg"
-                    :min="minDate"
-                  />
+            <div class="space-y-6">
+              <div class="space-y-2">
+                <p class="pill border-amber-200/60 bg-amber-200/10 text-amber-100">Premium Item</p>
+                <h1 class="text-3xl font-bold leading-tight">{{ item.name }}</h1>
+                <div class="flex items-center gap-2 text-sm text-slate-300">
+                  <span class="text-amber-200">⭐ {{ item.averageRating?.toFixed(1) || 'N/A' }}</span>
+                  <span>({{ item.reviewCount || 0 }} รีวิว)</span>
                 </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">วันที่สิ้นสุด</label>
-                  <input
-                    v-model="rentalForm.endDate"
-                    type="date"
-                    class="w-full px-4 py-2 border rounded-lg"
-                    :min="rentalForm.startDate || minDate"
-                  />
+              </div>
+
+              <div class="space-y-2">
+                <div class="flex items-end gap-3">
+                  <span class="text-4xl font-extrabold text-amber-200">{{ item.pricePerDay }} ฿/วัน</span>
+                  <span class="text-sm text-slate-300">+ {{ item.depositAmount }} ฿ มัดจำ</span>
                 </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">จำนวน</label>
-                  <input
-                    v-model.number="rentalForm.quantity"
-                    type="number"
-                    min="1"
-                    :max="item.quantity"
-                    class="w-full px-4 py-2 border rounded-lg"
-                  />
-                </div>
-                <div class="bg-gray-50 p-4 rounded-lg">
-                  <p class="text-sm text-gray-600">
-                    จำนวนวัน: <span class="font-semibold">{{ totalDays }}</span>
-                  </p>
-                  <p class="text-lg font-bold text-blue-600 mt-2">
-                    ราคารวม: {{ totalPrice }} ฿
-                  </p>
+                <p class="text-slate-200">{{ item.description }}</p>
+              </div>
+
+              <div class="flex flex-wrap gap-3 text-sm text-slate-300">
+                <span class="pill border-white/10 bg-white/5">สถานะ: {{ item.status === 'AVAILABLE' ? 'พร้อมให้เช่า' : 'ไม่พร้อมให้เช่า' }}</span>
+                <span class="pill border-white/10 bg-white/5">หมวดหมู่: {{ item.category?.name }}</span>
+                <span class="pill border-white/10 bg-white/5">จำนวนคงเหลือ: {{ item.quantity }}</span>
+              </div>
+
+              <div v-if="item.status === 'AVAILABLE'" class="glass-card rounded-2xl border-white/10 p-4">
+                <h3 class="text-xl font-semibold text-white">เช่าสินค้านี้</h3>
+                <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div class="space-y-2">
+                    <label class="text-sm text-slate-300">วันที่เริ่มเช่า</label>
+                    <input
+                      v-model="rentalForm.startDate"
+                      type="date"
+                      class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white focus:border-amber-200/60 focus:outline-none"
+                      :min="minDate"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-sm text-slate-300">วันที่สิ้นสุด</label>
+                    <input
+                      v-model="rentalForm.endDate"
+                      type="date"
+                      class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white focus:border-amber-200/60 focus:outline-none"
+                      :min="rentalForm.startDate || minDate"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-sm text-slate-300">จำนวน</label>
+                    <input
+                      v-model.number="rentalForm.quantity"
+                      type="number"
+                      min="1"
+                      :max="item.quantity"
+                      class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white focus:border-amber-200/60 focus:outline-none"
+                    />
+                  </div>
+                  <div class="space-y-2 rounded-2xl border border-white/5 bg-white/5 p-4">
+                    <p class="text-sm text-slate-300">จำนวนวัน: <span class="font-semibold text-white">{{ totalDays }}</span></p>
+                    <p class="text-xl font-bold text-amber-200">ราคารวม: {{ totalPrice }} ฿</p>
+                  </div>
                 </div>
                 <button
                   @click="addToCart"
-                  class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
+                  class="primary-btn mt-4 w-full justify-center"
                   :disabled="!rentalForm.startDate || !rentalForm.endDate"
                 >
                   เพิ่มลงตะกร้า
@@ -108,29 +97,28 @@
           </div>
         </div>
 
-        <!-- Reviews Section -->
-        <div class="border-t p-8">
-          <h2 class="text-2xl font-bold mb-6">รีวิวจากผู้ใช้</h2>
-          <div v-if="reviews.length" class="space-y-4">
-            <div
-              v-for="review in reviews"
-              :key="review.id"
-              class="border-b pb-4 last:border-b-0"
-            >
-              <div class="flex items-center mb-2">
-                <span class="text-yellow-500">⭐ {{ review.rating }}/5</span>
-                <span class="text-gray-600 ml-4 text-sm">{{ formatDate(review.createdAt) }}</span>
+        <div class="glass-card rounded-3xl border-white/10 p-6 shadow-2xl">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs uppercase tracking-[0.25em] text-amber-200">Voices</p>
+              <h2 class="text-2xl font-bold text-white">รีวิวจากผู้ใช้</h2>
+            </div>
+            <span class="pill border-white/10 bg-white/5 text-xs text-slate-200">{{ reviews.length }} รีวิว</span>
+          </div>
+          <div v-if="reviews.length" class="mt-4 space-y-4">
+            <div v-for="review in reviews" :key="review.id" class="glass-card rounded-2xl border-white/5 p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-amber-200">⭐ {{ review.rating }}/5</span>
+                <span class="text-sm text-slate-300">{{ formatDate(review.createdAt) }}</span>
               </div>
-              <p class="text-gray-700">{{ review.comment }}</p>
+              <p class="mt-2 text-slate-200">{{ review.comment }}</p>
             </div>
           </div>
-          <p v-else class="text-gray-500 text-center py-4">ยังไม่มีรีวิว</p>
+          <p v-else class="py-6 text-center text-slate-300">ยังไม่มีรีวิว</p>
         </div>
       </div>
 
-      <div v-else class="text-center py-12">
-        <p class="text-gray-600">ไม่พบข้อมูลสินค้า</p>
-      </div>
+      <div v-else class="glass-card rounded-3xl border-white/10 p-10 text-center text-slate-300">ไม่พบข้อมูลสินค้า</div>
     </div>
   </div>
 </template>
